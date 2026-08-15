@@ -9,9 +9,22 @@
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- loader ---------- */
-  window.addEventListener("load", () => {
-    setTimeout(() => $("#loader").classList.add("done"), 700);
-  });
+  function hideLoader() {
+    const loader = $("#loader");
+    if (loader && !loader.classList.contains("done")) loader.classList.add("done");
+  }
+  // Case 1: page already finished loading before this script ran
+  // (common on mobile with cached assets) — 'load' will never fire again.
+  if (document.readyState === "complete") {
+    setTimeout(hideLoader, 300);
+  } else {
+    window.addEventListener("load", () => setTimeout(hideLoader, 700));
+  }
+  // Case 2: page restored from bfcache (iOS Safari / Android Chrome swipe-back)
+  // — 'load' does not refire on restore, only 'pageshow' does.
+  window.addEventListener("pageshow", (e) => { if (e.persisted) hideLoader(); });
+  // Case 3: absolute safety net — never let a stalled font/asset trap the loader.
+  setTimeout(hideLoader, 4000);
 
   /* ---------- theme ---------- */
   const root = document.documentElement;
@@ -136,9 +149,8 @@
     .map(
       (s) => `
     <article class="glass skill reveal" data-cat="${s.c}">
-      <div class="skill-top"><strong>${s.n}</strong><em>${s.l}%</em></div>
+      <div class="skill-top"><strong>${s.n}</strong></div>
       <small>${labels[s.c]}</small>
-      <div class="bar"><i data-level="${s.l}"></i></div>
     </article>`,
     )
     .join("");
@@ -332,33 +344,132 @@
     renderQuote();
   }, 7000);
 
-  /* ---------- github dashboard (illustrative data) ---------- */
-  const heat = $("#heatmap");
-  let total = 0,
-    frag = "";
-  for (let i = 0; i < 371; i++) {
-    const r = Math.random();
-    const lvl = r > 0.93 ? 4 : r > 0.8 ? 3 : r > 0.6 ? 2 : r > 0.35 ? 1 : 0;
-    total += lvl * 2;
-    frag += `<i class="l${lvl}"></i>`;
-  }
-  heat.innerHTML = frag;
-  $("#contribTotal").textContent = total + " contributions · last year";
+  /* ---------- github dashboard (live via GitHub API) ---------- */
+  // Set your GitHub username here to pull real data. Leave blank ("") to
+  // keep the illustrative placeholder numbers instead.
+  const GITHUB_USERNAME = "arafsarkar13";
 
-  const langs = [
-    ["JavaScript", 46],
-    ["HTML", 22],
-    ["CSS", 18],
-    ["Node.js", 9],
-    ["Other", 5],
-  ];
-  $("#langBars").innerHTML = langs
-    .map(
-      ([n, v]) => `
-    <div class="lang-row"><div class="lang-top"><span>${n}</span><span class="muted mono">${v}%</span></div>
-    <div class="bar"><i data-level="${v}"></i></div></div>`,
-    )
-    .join("");
+  const dashCaption = $("#dashCaption");
+  const heat = $("#heatmap");
+
+  function renderHeatmap(levels) {
+    heat.innerHTML = levels.map((l) => `<i class="l${l}"></i>`).join("");
+  }
+
+  function renderIllustrativeGithub() {
+    let total = 0;
+    const levels = [];
+    for (let i = 0; i < 371; i++) {
+      const r = Math.random();
+      const lvl = r > 0.93 ? 4 : r > 0.8 ? 3 : r > 0.6 ? 2 : r > 0.35 ? 1 : 0;
+      total += lvl * 2;
+      levels.push(lvl);
+    }
+    renderHeatmap(levels);
+    $("#contribTotal").textContent = total + " contributions · last year";
+    $("#repoCount").dataset.count = "18";
+    $("#commitCount").dataset.count = "640";
+    $("#streakCount").dataset.count = "26";
+    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(finalizeCounter);
+    renderLangBars([
+      ["JavaScript", 46],
+      ["HTML", 22],
+      ["CSS", 18],
+      ["Node.js", 9],
+      ["Other", 5],
+    ]);
+    if (dashCaption)
+      dashCaption.textContent =
+        "Illustrative snapshot — set GITHUB_USERNAME in script.js to render live data.";
+  }
+
+  function renderLangBars(langs) {
+    $("#langBars").innerHTML = langs
+      .map(
+        ([n, v]) => `
+      <div class="lang-row"><div class="lang-top"><span>${n}</span><span class="muted mono">${v}%</span></div>
+      <div class="bar"><i data-level="${v}"></i></div></div>`,
+      )
+      .join("");
+    finalizeLangBars();
+  }
+  function finalizeCounter(el) {
+    if (el && el.dataset.done) {
+      // already animated once with placeholder data — correct the final value
+      el.textContent = el.dataset.count + (el.dataset.suffix || "");
+    }
+  }
+  function finalizeLangBars() {
+    const langsCard = $("#langBars")?.closest(".reveal");
+    if (langsCard && langsCard.classList.contains("in")) {
+      $$("#langBars .bar i").forEach((b) => (b.style.width = b.dataset.level + "%"));
+    }
+  }
+
+  async function loadLiveGithub(username) {
+    // 1) profile — official GitHub REST API, no auth needed for this endpoint
+    const userRes = await fetch(`https://api.github.com/users/${username}`);
+    if (!userRes.ok) throw new Error(`GitHub user lookup failed (${userRes.status})`);
+    const user = await userRes.json();
+
+    // 2) contribution calendar — GitHub's own API only exposes this via
+    // authenticated GraphQL, which can't be called safely from the browser
+    // (it'd expose a token to every visitor). This uses a public, unofficial,
+    // read-only mirror of the same calendar data instead.
+    const contribRes = await fetch(
+      `https://github-contributions-api.jogruber.de/v4/${username}?y=last`,
+    );
+    if (!contribRes.ok) throw new Error("Contribution calendar fetch failed");
+    const contrib = await contribRes.json();
+    const days = contrib.contributions || [];
+    const totalContribs = days.reduce((sum, d) => sum + d.count, 0);
+    let streak = 0;
+    for (let i = days.length - 1; i >= 0; i--) {
+      const isToday = i === days.length - 1;
+      if (days[i].count > 0) streak++;
+      else if (isToday) continue; // today may just not have activity yet
+      else break;
+    }
+    renderHeatmap(days.map((d) => d.level ?? 0));
+    $("#contribTotal").textContent = totalContribs + " contributions · last year";
+
+    // 3) repos + languages — official REST API
+    const reposRes = await fetch(
+      `https://api.github.com/users/${username}/repos?per_page=100`,
+    );
+    if (!reposRes.ok) throw new Error("Repo list fetch failed");
+    const repos = await reposRes.json();
+    const langCounts = {};
+    let counted = 0;
+    repos
+      .filter((r) => !r.fork && r.language)
+      .forEach((r) => {
+        langCounts[r.language] = (langCounts[r.language] || 0) + 1;
+        counted++;
+      });
+    const langs = Object.entries(langCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name, count]) => [name, Math.round((count / counted) * 100)]);
+
+    $("#repoCount").dataset.count = String(user.public_repos ?? repos.length);
+    $("#commitCount").dataset.count = String(totalContribs);
+    $("#commitCount").dataset.suffix = "";
+    $("#streakCount").dataset.count = String(streak);
+    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(finalizeCounter);
+    if (langs.length) renderLangBars(langs);
+    if (dashCaption)
+      dashCaption.innerHTML = `Live data from <a href="https://github.com/${username}" target="_blank" rel="noopener">github.com/${username}</a> via the GitHub API.`;
+  }
+
+  if (GITHUB_USERNAME) {
+    loadLiveGithub(GITHUB_USERNAME).catch((err) => {
+      console.warn("Live GitHub data unavailable, showing illustrative snapshot:", err);
+      renderIllustrativeGithub();
+    });
+  } else {
+    renderIllustrativeGithub();
+  }
 
   /* ---------- filters ---------- */
   function wireFilter(barSel, itemSel) {
@@ -379,7 +490,18 @@
   wireFilter("#skillFilters", ".skill");
   wireFilter("#projectFilters", ".project");
 
-  /* ---------- reveal + counters + bars ---------- */
+  /* ---------- reveal + counters + bars (with stagger) ---------- */
+  // Give siblings inside the same parent a small incremental delay so
+  // grids (skills, projects, cards) reveal in a wave instead of all at once.
+  const revealGroups = new Map();
+  $$(".reveal").forEach((el) => {
+    const parent = el.parentElement;
+    const idx = revealGroups.get(parent) || 0;
+    revealGroups.set(parent, idx + 1);
+    const delay = Math.min(idx, 6) * 70; // cap so long grids don't lag too far
+    el.style.transitionDelay = delay + "ms";
+  });
+
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((en) => {
@@ -396,6 +518,44 @@
     { threshold: 0.15 },
   );
   $$(".reveal").forEach((el) => io.observe(el));
+
+  /* ---------- subtle hero parallax ---------- */
+  if (!reduced) {
+    const floaters = $(".floaters");
+    if (floaters) {
+      let ticking = false;
+      addEventListener(
+        "scroll",
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            const y = Math.min(window.scrollY, 600);
+            floaters.style.transform = `translate3d(0, ${y * 0.12}px, 0)`;
+            ticking = false;
+          });
+        },
+        { passive: true },
+      );
+    }
+  }
+
+  /* ---------- live clock ---------- */
+  (function liveClock() {
+    const timeEl = $("#clockTime"), metaEl = $("#clockMeta");
+    if (!timeEl || !metaEl) return;
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    function tick() {
+      const now = new Date();
+      timeEl.textContent = now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      const day = now.toLocaleDateString(undefined, { weekday: "short" });
+      const date = now.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      const tzShort = now.toLocaleTimeString(undefined, { timeZoneName: "short" }).split(" ").pop();
+      metaEl.textContent = `${day} · ${date} · ${tzShort || tz}`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
 
   function countUp(el) {
     if (el.dataset.done) return;
@@ -430,13 +590,30 @@
   );
   sections.forEach((s) => spy.observe(s));
 
-  /* ---------- contact form ---------- */
+  /* ---------- contact form (real-time send via EmailJS) ---------- */
+  // 1. Create a free account at https://www.emailjs.com
+  // 2. Add an Email Service (e.g. Gmail) → copy its Service ID below.
+  // 3. Create an Email Template with variables: {{from_name}} {{from_email}}
+  //    {{subject}} {{message}} → copy its Template ID below.
+  // 4. Account → API Keys → copy your Public Key below.
+  const EMAILJS_CONFIG = {
+    publicKey: "YOUR_PUBLIC_KEY",
+    serviceId: "YOUR_SERVICE_ID",
+    templateId: "YOUR_TEMPLATE_ID",
+  };
+  const emailjsReady =
+    typeof emailjs !== "undefined" &&
+    EMAILJS_CONFIG.publicKey !== "YOUR_PUBLIC_KEY";
+  if (emailjsReady) emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+
   const form = $("#contactForm"),
-    toast = $("#toast");
-  function showToast(msg) {
+    toast = $("#toast"),
+    submitBtn = $("#contactSubmit");
+  function showToast(msg, isError) {
     toast.textContent = msg;
+    toast.classList.toggle("error", !!isError);
     toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3200);
+    setTimeout(() => toast.classList.remove("show"), 3800);
   }
   function setError(name, msg) {
     const field = $(`#${name}`).closest(".field");
@@ -444,9 +621,34 @@
     $(`.error[data-for="${name}"]`).textContent = msg || "";
     $(`#${name}`).setAttribute("aria-invalid", msg ? "true" : "false");
   }
+  function setSending(isSending) {
+    submitBtn.classList.toggle("is-loading", isSending);
+    submitBtn.disabled = isSending;
+  }
+
+  const RATE_LIMIT_MS = 45000; // one submission per 45s per browser
+  const RATE_LIMIT_KEY = "contactLastSent";
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const v = (id) => $("#" + id).value.trim();
+
+    // Honeypot: bots fill every field, real users never see #company
+    if (v("company")) {
+      showToast("Thanks! Message sent.");
+      form.reset();
+      return;
+    }
+
+    // Rate limit: prevent rapid-fire spam submissions
+    const last = +localStorage.getItem(RATE_LIMIT_KEY) || 0;
+    const waited = Date.now() - last;
+    if (waited < RATE_LIMIT_MS) {
+      const secs = Math.ceil((RATE_LIMIT_MS - waited) / 1000);
+      showToast(`Please wait ${secs}s before sending another message.`, true);
+      return;
+    }
+
     let ok = true;
     const checks = {
       name: v("name").length < 2 ? "Please enter your full name." : "",
@@ -464,15 +666,39 @@
       if (msg) ok = false;
     });
     if (!ok) {
-      showToast("Please fix the highlighted fields.");
+      showToast("Please fix the highlighted fields.", true);
       return;
     }
-    const body = encodeURIComponent(
-      `${v("message")}\n\n— ${v("name")} (${v("email")})`,
-    );
-    window.location.href = `mailto:arafsarkar13@gmail.com?subject=${encodeURIComponent(v("subject"))}&body=${body}`;
-    showToast("Thanks! Opening your email client…");
-    form.reset();
+
+    if (!emailjsReady) {
+      // Fallback while EmailJS isn't configured yet — keeps the form usable.
+      const body = encodeURIComponent(
+        `${v("message")}\n\n— ${v("name")} (${v("email")})`,
+      );
+      window.location.href = `mailto:arafsarkar13@gmail.com?subject=${encodeURIComponent(v("subject"))}&body=${body}`;
+      showToast("Opening your email client (EmailJS not configured yet)…");
+      form.reset();
+      return;
+    }
+
+    setSending(true);
+    emailjs
+      .send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+        from_name: v("name"),
+        from_email: v("email"),
+        subject: v("subject"),
+        message: v("message"),
+      })
+      .then(() => {
+        localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
+        showToast("Message sent! I'll get back to you soon.");
+        form.reset();
+      })
+      .catch((err) => {
+        console.error("EmailJS send failed:", err);
+        showToast("Couldn't send right now — please try again or email me directly.", true);
+      })
+      .finally(() => setSending(false));
   });
   $$("#contactForm input, #contactForm textarea").forEach((el) => {
     el.addEventListener("input", () => setError(el.id, ""));
