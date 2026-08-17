@@ -23,13 +23,22 @@
 
 <!-- Loading screen -->
 <div id="loader" class="loader" aria-hidden="true">
-  <div class="loader-mark">AS</div>
+  <div class="loader-orbit">
+    <span class="loader-particle"></span><span class="loader-particle"></span>
+    <span class="loader-particle"></span><span class="loader-particle"></span>
+    <div class="loader-photo-ring">
+      <img src="assets/profile.jpg" alt="" class="loader-photo" width="120" height="120" />
+    </div>
+  </div>
+  <div class="loader-mark">Araf<span class="grad">.dev</span></div>
   <div class="loader-bar"><span></span></div>
-  <p class="loader-text">Compiling experience…</p>
+  <p class="loader-text" id="loaderText">Compiling experience…</p>
+  <p class="loader-pct" id="loaderPct">0%</p>
 </div>
 
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
 
@@ -323,7 +332,7 @@
         <span class="btn-label">Send message</span>
         <span class="btn-spinner" aria-hidden="true"></span>
       </button>
-      <p class="form-note muted">Sends directly to my inbox — no mail client required.</p>
+      <p class="form-note muted">Sends directly to me — no mail client, no redirect.</p>
     </form>
   </div>
 </section>

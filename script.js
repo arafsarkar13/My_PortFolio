@@ -12,7 +12,35 @@
   function hideLoader() {
     const loader = $("#loader");
     if (loader && !loader.classList.contains("done")) loader.classList.add("done");
+    clearInterval(loaderMsgTimer);
+    clearInterval(loaderPctTimer);
   }
+  // Rotating status messages + a live percentage counter, purely cosmetic,
+  // both self-terminate via hideLoader() so they never outlive the loader.
+  const loaderMessages = [
+    "Compiling experience…", "Bundling curiosity…", "Linting the coffee…",
+    "Warming up the grid…", "Almost there…",
+  ];
+  const loaderTextEl = $("#loaderText"), loaderPctEl = $("#loaderPct");
+  let loaderMsgIdx = 0;
+  const loaderMsgTimer = loaderTextEl
+    ? setInterval(() => {
+        loaderMsgIdx = (loaderMsgIdx + 1) % loaderMessages.length;
+        loaderTextEl.style.opacity = 0;
+        setTimeout(() => {
+          loaderTextEl.textContent = loaderMessages[loaderMsgIdx];
+          loaderTextEl.style.opacity = 1;
+        }, 250);
+      }, 650)
+    : null;
+  let loaderPct = 0;
+  const loaderPctTimer = loaderPctEl
+    ? setInterval(() => {
+        loaderPct = Math.min(loaderPct + Math.round(Math.random() * 9) + 3, 99);
+        loaderPctEl.textContent = loaderPct + "%";
+      }, 130)
+    : null;
+
   // Case 1: page already finished loading before this script ran
   // (common on mobile with cached assets) — 'load' will never fire again.
   if (document.readyState === "complete") {
@@ -62,23 +90,37 @@
     scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }),
   );
 
-  /* ---------- custom cursor ---------- */
+  /* ---------- custom cursor + trailing glow ---------- */
   const cur = $("#cursor"),
-    dot = $("#cursorDot");
+    dot = $("#cursorDot"),
+    glow = $("#cursorGlow");
   if (matchMedia("(hover: hover)").matches) {
     let x = 0,
       y = 0,
       cx = 0,
-      cy = 0;
+      cy = 0,
+      gx = 0,
+      gy = 0,
+      glowTimeout;
     addEventListener("mousemove", (e) => {
       x = e.clientX;
       y = e.clientY;
       dot.style.transform = `translate(${x - 2}px, ${y - 2}px)`;
+      if (glow) {
+        glow.classList.add("active");
+        clearTimeout(glowTimeout);
+        glowTimeout = setTimeout(() => glow.classList.remove("active"), 900);
+      }
     });
     (function loop() {
-      cx += (x - cx) * 0.18;
-      cy += (y - cy) * 0.18;
+      cx += (x - cx) * 0.45;
+      cy += (y - cy) * 0.45;
       cur.style.transform = `translate(${cx - 17}px, ${cy - 17}px)`;
+      if (glow) {
+        gx += (x - gx) * 0.08; // slower lerp = longer, dreamier trail
+        gy += (y - gy) * 0.08;
+        glow.style.transform = `translate(${gx}px, ${gy}px)`;
+      }
       requestAnimationFrame(loop);
     })();
     document.addEventListener("mouseover", (e) => {
@@ -490,16 +532,22 @@
   wireFilter("#skillFilters", ".skill");
   wireFilter("#projectFilters", ".project");
 
-  /* ---------- reveal + counters + bars (with stagger) ---------- */
-  // Give siblings inside the same parent a small incremental delay so
-  // grids (skills, projects, cards) reveal in a wave instead of all at once.
-  const revealGroups = new Map();
+  /* ---------- reveal + counters + bars (with stagger + direction) ---------- */
+  // Give siblings inside the same parent a small incremental delay, and — for
+  // grids with several items — alternate the direction each one flies in from,
+  // so sections feel dynamic instead of every card sliding up the same way.
+  const revealDirections = ["reveal-left", "reveal-right", "reveal-scale", "reveal-down"];
+  const revealGroups = new Map(); // parent -> array of its .reveal children, in order
   $$(".reveal").forEach((el) => {
     const parent = el.parentElement;
-    const idx = revealGroups.get(parent) || 0;
-    revealGroups.set(parent, idx + 1);
-    const delay = Math.min(idx, 6) * 70; // cap so long grids don't lag too far
-    el.style.transitionDelay = delay + "ms";
+    if (!revealGroups.has(parent)) revealGroups.set(parent, []);
+    revealGroups.get(parent).push(el);
+  });
+  revealGroups.forEach((siblings) => {
+    siblings.forEach((el, idx) => {
+      el.style.transitionDelay = Math.min(idx, 6) * 70 + "ms"; // cap so long grids don't lag too far
+      if (siblings.length > 1) el.classList.add(revealDirections[idx % revealDirections.length]);
+    });
   });
 
   const io = new IntersectionObserver(
@@ -606,6 +654,29 @@
     EMAILJS_CONFIG.publicKey !== "YOUR_PUBLIC_KEY";
   if (emailjsReady) emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
 
+  /* ---------- silent WhatsApp delivery (via CallMeBot) ---------- */
+  // 1. Save +34 644 59 71 15 as a contact on the phone that owns +8801518972367.
+  // 2. From +8801518972367, WhatsApp that contact: "I allow callmebot to send me messages"
+  // 3. CallMeBot replies with your personal apiKey — paste it below.
+  // Docs: https://www.callmebot.com/blog/free-api-whatsapp-messages/
+  // Note: this is a free, unofficial, third-party bridge — not run by WhatsApp/Meta.
+  // Messages land directly in your WhatsApp with no redirect for the visitor,
+  // but delivery isn't 100% guaranteed and it's rate-limited to ~1 msg/minute.
+  const WHATSAPP_CONFIG = {
+    phone: "8801518972367", // your number, digits only, no + or spaces
+    apiKey: "YOUR_CALLMEBOT_APIKEY",
+  };
+  const whatsappReady = WHATSAPP_CONFIG.apiKey !== "YOUR_CALLMEBOT_APIKEY";
+
+  function sendToWhatsApp(text) {
+    const url =
+      `https://api.callmebot.com/whatsapp.php?phone=${WHATSAPP_CONFIG.phone}` +
+      `&text=${encodeURIComponent(text)}&apikey=${WHATSAPP_CONFIG.apiKey}`;
+    // no-cors: fire-and-forget — CallMeBot doesn't return CORS headers, so we
+    // can't read the response, but the request still reaches it in the background.
+    return fetch(url, { mode: "no-cors" });
+  }
+
   const form = $("#contactForm"),
     toast = $("#toast"),
     submitBtn = $("#contactSubmit");
@@ -670,35 +741,45 @@
       return;
     }
 
-    if (!emailjsReady) {
-      // Fallback while EmailJS isn't configured yet — keeps the form usable.
+    const waMessage = `New portfolio message\nFrom: ${v("name")} (${v("email")})\nSubject: ${v("subject")}\n\n${v("message")}`;
+
+    if (!emailjsReady && !whatsappReady) {
+      // Neither channel configured yet — keep the form usable via mailto fallback.
       const body = encodeURIComponent(
         `${v("message")}\n\n— ${v("name")} (${v("email")})`,
       );
       window.location.href = `mailto:arafsarkar13@gmail.com?subject=${encodeURIComponent(v("subject"))}&body=${body}`;
-      showToast("Opening your email client (EmailJS not configured yet)…");
+      showToast("Opening your email client (no send channel configured yet)…");
       form.reset();
       return;
     }
 
     setSending(true);
-    emailjs
-      .send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
-        from_name: v("name"),
-        from_email: v("email"),
-        subject: v("subject"),
-        message: v("message"),
-      })
-      .then(() => {
+    const sends = [];
+    if (emailjsReady) {
+      sends.push(
+        emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+          from_name: v("name"),
+          from_email: v("email"),
+          subject: v("subject"),
+          message: v("message"),
+        }),
+      );
+    }
+    if (whatsappReady) sends.push(sendToWhatsApp(waMessage));
+
+    Promise.allSettled(sends).then((results) => {
+      const anySucceeded = results.some((r) => r.status === "fulfilled");
+      if (anySucceeded) {
         localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
         showToast("Message sent! I'll get back to you soon.");
         form.reset();
-      })
-      .catch((err) => {
-        console.error("EmailJS send failed:", err);
+      } else {
+        console.error("Contact send failed:", results);
         showToast("Couldn't send right now — please try again or email me directly.", true);
-      })
-      .finally(() => setSending(false));
+      }
+      setSending(false);
+    });
   });
   $$("#contactForm input, #contactForm textarea").forEach((el) => {
     el.addEventListener("input", () => setError(el.id, ""));
