@@ -23,17 +23,22 @@
 
 <!-- Loading screen -->
 <div id="loader" class="loader" aria-hidden="true">
-  <div class="loader-orbit">
-    <span class="loader-particle"></span><span class="loader-particle"></span>
-    <span class="loader-particle"></span><span class="loader-particle"></span>
-    <div class="loader-photo-ring">
-      <img src="assets/profile.jpg" alt="" class="loader-photo" width="120" height="120" />
+  <div class="loader-phase loader-phase-boot active" id="loaderBoot">
+    <div class="loader-flyby" aria-hidden="true">
+      <span class="loader-trail-dot"></span>
+      <span class="loader-trail-dot"></span>
+      <span class="loader-trail-dot"></span>
+      <span class="loader-rocket">🚀</span>
     </div>
+    <div class="loader-mark">Araf<span class="grad">.dev</span></div>
+    <div class="loader-bar"><span></span></div>
+    <p class="loader-text" id="loaderText">Compiling experience…</p>
+    <p class="loader-pct" id="loaderPct">0%</p>
   </div>
-  <div class="loader-mark">Araf<span class="grad">.dev</span></div>
-  <div class="loader-bar"><span></span></div>
-  <p class="loader-text" id="loaderText">Compiling experience…</p>
-  <p class="loader-pct" id="loaderPct">0%</p>
+  <div class="loader-phase loader-phase-access" id="loaderAccess">
+    <p class="loader-access-eyebrow">// Access Granted</p>
+    <h2 class="loader-access-title">Welcome to <span class="grad">Araf's</span><br />Build Log</h2>
+  </div>
 </div>
 
 <div class="cursor" id="cursor" aria-hidden="true"></div>
@@ -290,50 +295,60 @@
 
 <!-- CONTACT -->
 <section id="contact" class="section alt">
-  <div class="container contact-grid">
-    <div class="reveal">
+  <div class="container">
+    <header class="section-head reveal">
       <p class="kicker">10 — Contact</p>
-      <h2>Let’s build something</h2>
+      <h2 class="hud-title">Transmit a <span class="grad">Message</span></h2>
       <p class="lead">Open to internships, junior developer roles and freelance work.</p>
-      <ul class="contact-list">
-        <li><span class="mono">Email</span><a href="mailto:arafsarkar13@gmail.com">arafsarkar13@gmail.com</a></li>
-        <li><span class="mono">GitHub</span><a href="https://github.com/arafsarkar13" target="_blank" rel="noopener">arafsarkar13</a></li>
-        <li><span class="mono">LinkedIn</span><a href="https://www.linkedin.com/in/arafsarkar13/" target="_blank" rel="noopener">arafsarkar13</a></li>
-        <li><span class="mono">Telegram</span><a href="https://t.me/akaimma" target="_blank" rel="noopener">@akaimma</a></li>
-      </ul>
+    </header>
+    <div class="contact-grid">
+      <div class="reveal">
+        <ul class="contact-list">
+          <li><span class="mono">Email</span><a href="mailto:arafsarkar13@gmail.com">arafsarkar13@gmail.com</a></li>
+          <li><span class="mono">GitHub</span><a href="https://github.com/arafsarkar13" target="_blank" rel="noopener">arafsarkar13</a></li>
+          <li><span class="mono">LinkedIn</span><a href="https://www.linkedin.com/in/arafsarkar13/" target="_blank" rel="noopener">arafsarkar13</a></li>
+          <li><span class="mono">Telegram</span><a href="https://t.me/akaimma" target="_blank" rel="noopener">@akaimma</a></li>
+        </ul>
+      </div>
+      <div class="hud-frame reveal">
+        <span class="hud-corner hud-corner-tl" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner-tr" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner-bl" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner-br" aria-hidden="true"></span>
+        <form class="glass card hud-form" id="contactForm" novalidate>
+          <div class="field">
+            <label for="name">Identity / Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required />
+            <p class="error" data-for="name"></p>
+          </div>
+          <div class="field">
+            <label for="email">Secure routing / Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+            <p class="error" data-for="email"></p>
+          </div>
+          <div class="field">
+            <label for="subject">Transmission subject</label>
+            <input id="subject" name="subject" type="text" required />
+            <p class="error" data-for="subject"></p>
+          </div>
+          <div class="field">
+            <label for="message">Payload / Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+            <p class="error" data-for="message"></p>
+          </div>
+          <!-- Honeypot: real users never see/fill this; bots that auto-fill every field do -->
+          <div class="field hp-field" aria-hidden="true">
+            <label for="company">Company</label>
+            <input id="company" name="company" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <button class="btn btn-primary" type="submit" id="contactSubmit">
+            <span class="btn-label">Initialize Transmission ➤</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <p class="form-note muted">Sends directly to me — no mail client, no redirect.</p>
+        </form>
+      </div>
     </div>
-    <form class="glass card reveal" id="contactForm" novalidate>
-      <div class="field">
-        <label for="name">Full name</label>
-        <input id="name" name="name" type="text" autocomplete="name" required />
-        <p class="error" data-for="name"></p>
-      </div>
-      <div class="field">
-        <label for="email">Email address</label>
-        <input id="email" name="email" type="email" autocomplete="email" required />
-        <p class="error" data-for="email"></p>
-      </div>
-      <div class="field">
-        <label for="subject">Subject</label>
-        <input id="subject" name="subject" type="text" required />
-        <p class="error" data-for="subject"></p>
-      </div>
-      <div class="field">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="5" required></textarea>
-        <p class="error" data-for="message"></p>
-      </div>
-      <!-- Honeypot: real users never see/fill this; bots that auto-fill every field do -->
-      <div class="field hp-field" aria-hidden="true">
-        <label for="company">Company</label>
-        <input id="company" name="company" type="text" tabindex="-1" autocomplete="off" />
-      </div>
-      <button class="btn btn-primary" type="submit" id="contactSubmit">
-        <span class="btn-label">Send message</span>
-        <span class="btn-spinner" aria-hidden="true"></span>
-      </button>
-      <p class="form-note muted">Sends directly to me — no mail client, no redirect.</p>
-    </form>
   </div>
 </section>
 

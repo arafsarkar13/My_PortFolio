@@ -9,19 +9,58 @@
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- loader ---------- */
-  function hideLoader() {
-    const loader = $("#loader");
-    if (loader && !loader.classList.contains("done")) loader.classList.add("done");
+  const LOADER_MIN_MS = 3000; // the site must stay on the loader at least this long
+  const loaderStart = performance.now();
+  let loaderExited = false;
+
+  // Instant hide, no animation — used only for the bfcache-restore edge case,
+  // where re-running a multi-second boot sequence on every back-navigation
+  // would be far more annoying than helpful.
+  function hideLoaderInstant() {
+    loaderExited = true;
     clearInterval(loaderMsgTimer);
     clearInterval(loaderPctTimer);
+    const loader = $("#loader");
+    if (loader) loader.classList.add("done");
   }
+
+  // Normal exit: snap to 100%, hold briefly, swap to the "access granted"
+  // panel, hold that, then fade the whole loader out.
+  function beginLoaderExit() {
+    if (loaderExited) return;
+    loaderExited = true;
+    clearInterval(loaderMsgTimer);
+    clearInterval(loaderPctTimer);
+    if (loaderPctEl) loaderPctEl.textContent = "100%";
+    const bootBar = document.querySelector("#loader .loader-bar span");
+    if (bootBar) bootBar.style.width = "100%";
+    setTimeout(() => {
+      $("#loaderBoot")?.classList.remove("active");
+      $("#loaderAccess")?.classList.add("active");
+      setTimeout(() => $("#loader")?.classList.add("done"), 950);
+    }, 300);
+  }
+
+  function hideLoader() {
+    if (loaderExited) return;
+    const elapsed = performance.now() - loaderStart;
+    // beginLoaderExit's own sequence takes ~1250ms (100% hold + access panel)
+    // before .done is applied, so back that out of the minimum-stay budget.
+    const remaining = Math.max(0, LOADER_MIN_MS - elapsed - 1250);
+    setTimeout(beginLoaderExit, remaining);
+  }
+
   // Rotating status messages + a live percentage counter, purely cosmetic,
   // both self-terminate via hideLoader() so they never outlive the loader.
   const loaderMessages = [
-    "Compiling experience…", "Bundling curiosity…", "Linting the coffee…",
-    "Warming up the grid…", "Almost there…",
+    "Compiling experience…",
+    "Bundling curiosity…",
+    "Linting the coffee…",
+    "Warming up the grid…",
+    "Almost there…",
   ];
-  const loaderTextEl = $("#loaderText"), loaderPctEl = $("#loaderPct");
+  const loaderTextEl = $("#loaderText"),
+    loaderPctEl = $("#loaderPct");
   let loaderMsgIdx = 0;
   const loaderMsgTimer = loaderTextEl
     ? setInterval(() => {
@@ -49,10 +88,13 @@
     window.addEventListener("load", () => setTimeout(hideLoader, 700));
   }
   // Case 2: page restored from bfcache (iOS Safari / Android Chrome swipe-back)
-  // — 'load' does not refire on restore, only 'pageshow' does.
-  window.addEventListener("pageshow", (e) => { if (e.persisted) hideLoader(); });
+  // — 'load' does not refire on restore, only 'pageshow' does. Skip the
+  // multi-second boot animation entirely here — just snap it away.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) hideLoaderInstant();
+  });
   // Case 3: absolute safety net — never let a stalled font/asset trap the loader.
-  setTimeout(hideLoader, 4000);
+  setTimeout(hideLoader, 4500);
 
   /* ---------- theme ---------- */
   const root = document.documentElement;
@@ -412,7 +454,9 @@
     $("#repoCount").dataset.count = "18";
     $("#commitCount").dataset.count = "640";
     $("#streakCount").dataset.count = "26";
-    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(finalizeCounter);
+    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(
+      finalizeCounter,
+    );
     renderLangBars([
       ["JavaScript", 46],
       ["HTML", 22],
@@ -444,14 +488,17 @@
   function finalizeLangBars() {
     const langsCard = $("#langBars")?.closest(".reveal");
     if (langsCard && langsCard.classList.contains("in")) {
-      $$("#langBars .bar i").forEach((b) => (b.style.width = b.dataset.level + "%"));
+      $$("#langBars .bar i").forEach(
+        (b) => (b.style.width = b.dataset.level + "%"),
+      );
     }
   }
 
   async function loadLiveGithub(username) {
     // 1) profile — official GitHub REST API, no auth needed for this endpoint
     const userRes = await fetch(`https://api.github.com/users/${username}`);
-    if (!userRes.ok) throw new Error(`GitHub user lookup failed (${userRes.status})`);
+    if (!userRes.ok)
+      throw new Error(`GitHub user lookup failed (${userRes.status})`);
     const user = await userRes.json();
 
     // 2) contribution calendar — GitHub's own API only exposes this via
@@ -469,11 +516,13 @@
     for (let i = days.length - 1; i >= 0; i--) {
       const isToday = i === days.length - 1;
       if (days[i].count > 0) streak++;
-      else if (isToday) continue; // today may just not have activity yet
+      else if (isToday)
+        continue; // today may just not have activity yet
       else break;
     }
     renderHeatmap(days.map((d) => d.level ?? 0));
-    $("#contribTotal").textContent = totalContribs + " contributions · last year";
+    $("#contribTotal").textContent =
+      totalContribs + " contributions · last year";
 
     // 3) repos + languages — official REST API
     const reposRes = await fetch(
@@ -498,7 +547,9 @@
     $("#commitCount").dataset.count = String(totalContribs);
     $("#commitCount").dataset.suffix = "";
     $("#streakCount").dataset.count = String(streak);
-    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(finalizeCounter);
+    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(
+      finalizeCounter,
+    );
     if (langs.length) renderLangBars(langs);
     if (dashCaption)
       dashCaption.innerHTML = `Live data from <a href="https://github.com/${username}" target="_blank" rel="noopener">github.com/${username}</a> via the GitHub API.`;
@@ -506,7 +557,10 @@
 
   if (GITHUB_USERNAME) {
     loadLiveGithub(GITHUB_USERNAME).catch((err) => {
-      console.warn("Live GitHub data unavailable, showing illustrative snapshot:", err);
+      console.warn(
+        "Live GitHub data unavailable, showing illustrative snapshot:",
+        err,
+      );
       renderIllustrativeGithub();
     });
   } else {
@@ -536,7 +590,12 @@
   // Give siblings inside the same parent a small incremental delay, and — for
   // grids with several items — alternate the direction each one flies in from,
   // so sections feel dynamic instead of every card sliding up the same way.
-  const revealDirections = ["reveal-left", "reveal-right", "reveal-scale", "reveal-down"];
+  const revealDirections = [
+    "reveal-left",
+    "reveal-right",
+    "reveal-scale",
+    "reveal-down",
+  ];
   const revealGroups = new Map(); // parent -> array of its .reveal children, in order
   $$(".reveal").forEach((el) => {
     const parent = el.parentElement;
@@ -546,7 +605,8 @@
   revealGroups.forEach((siblings) => {
     siblings.forEach((el, idx) => {
       el.style.transitionDelay = Math.min(idx, 6) * 70 + "ms"; // cap so long grids don't lag too far
-      if (siblings.length > 1) el.classList.add(revealDirections[idx % revealDirections.length]);
+      if (siblings.length > 1)
+        el.classList.add(revealDirections[idx % revealDirections.length]);
     });
   });
 
@@ -590,15 +650,26 @@
 
   /* ---------- live clock ---------- */
   (function liveClock() {
-    const timeEl = $("#clockTime"), metaEl = $("#clockMeta");
+    const timeEl = $("#clockTime"),
+      metaEl = $("#clockMeta");
     if (!timeEl || !metaEl) return;
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     function tick() {
       const now = new Date();
-      timeEl.textContent = now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      timeEl.textContent = now.toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
       const day = now.toLocaleDateString(undefined, { weekday: "short" });
-      const date = now.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-      const tzShort = now.toLocaleTimeString(undefined, { timeZoneName: "short" }).split(" ").pop();
+      const date = now.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+      });
+      const tzShort = now
+        .toLocaleTimeString(undefined, { timeZoneName: "short" })
+        .split(" ")
+        .pop();
       metaEl.textContent = `${day} · ${date} · ${tzShort || tz}`;
     }
     tick();
@@ -776,7 +847,10 @@
         form.reset();
       } else {
         console.error("Contact send failed:", results);
-        showToast("Couldn't send right now — please try again or email me directly.", true);
+        showToast(
+          "Couldn't send right now — please try again or email me directly.",
+          true,
+        );
       }
       setSending(false);
     });
@@ -794,7 +868,7 @@
   /* ---------- console message for anyone peeking at devtools ---------- */
   console.log(
     "%cAS",
-    "font-family: 'Sora', sans-serif; font-weight: 800; font-size: 42px; background: linear-gradient(120deg,#35e0c8,#5b8cff 55%,#b06cff); -webkit-background-clip: text; background-clip: text; color: transparent;",
+    "font-family: 'Sora', sans-serif; font-weight: 800; font-size: 42px; background: linear-gradient(120deg,#ff8a3d,#ff5b5b 55%,#ffc24d); -webkit-background-clip: text; background-clip: text; color: transparent;",
   );
   console.log(
     "%cLooking at the source, huh? I like that.\nHey, I'm Araf — CSE student, web dev, future software engineer.\nIf you're hiring or just curious: arafsarkar13@gmail.com\nPS: try the Konami code on this page. ↑ ↑ ↓ ↓ ← → ← → B A",
@@ -1004,7 +1078,7 @@
       if (!matrixRunning) return;
       ctx.fillStyle = "rgba(0,0,0,0.06)";
       ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "#35e0c8";
+      ctx.fillStyle = "#ff8a3d";
       ctx.font = "14px monospace";
       drops.forEach((y, i) => {
         const ch = chars[Math.floor(Math.random() * chars.length)];
