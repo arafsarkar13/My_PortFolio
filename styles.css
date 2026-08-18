@@ -4,13 +4,13 @@
    ========================================================= */
  
 :root {
-  --bg: #0a0805;
-  --bg-soft: #120c07;
-  --surface: rgba(255, 255, 255, 0.045);
-  --surface-strong: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.1);
+  --bg: #150e07;
+  --bg-soft: #1e140a;
+  --surface: rgba(255, 255, 255, 0.055);
+  --surface-strong: rgba(255, 255, 255, 0.095);
+  --border: rgba(255, 255, 255, 0.14);
   --fg: #fdf3ea;
-  --muted: #b3a394;
+  --muted: #c2ac97;
   --primary: #ff8a3d;
   --primary-2: #ff5b5b;
   --accent: #ffc24d;
@@ -40,7 +40,7 @@
 }
  
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   margin: 0;
   background: var(--bg);
@@ -90,7 +90,7 @@ body::after {
 /* ---------- loader ---------- */
 .loader {
   position: fixed; inset: 0; z-index: 300;
-  background: radial-gradient(ellipse at 50% 40%, color-mix(in oklab, var(--primary) 12%, var(--bg)) 0%, var(--bg) 62%);
+  background: radial-gradient(ellipse at 50% 40%, color-mix(in oklab, var(--primary) 22%, var(--bg)) 0%, var(--bg) 70%);
   transition: opacity .6s ease, visibility .6s;
   overflow: hidden;
 }
@@ -160,7 +160,7 @@ body::after {
   filter: blur(6px); opacity: 0; transition: opacity .4s ease;
 }
 .cursor-glow.active { opacity: 1; }
-@media (hover: none) { .cursor, .cursor-dot, .cursor-glow { display: none; } }
+@media (hover: none), (pointer: coarse) { .cursor, .cursor-dot, .cursor-glow { display: none; } }
 .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--grad); z-index: 210; }
  
 /* ---------- aurora background ---------- */
@@ -201,8 +201,9 @@ body::after {
  
 /* ---------- sections ---------- */
 .section { padding: clamp(4rem, 9vw, 7rem) 0; position: relative; }
-.section.alt { background: color-mix(in oklab, var(--bg-soft) 60%, transparent); border-block: 1px solid var(--border); }
+.section.alt { background: color-mix(in oklab, var(--bg-soft) 94%, transparent); border-block: 1px solid var(--border); }
 .section-head { max-width: 720px; margin-bottom: 2.6rem; }
+.dash-profile-link { display: inline-flex; margin-top: 1rem; padding: .55rem 1.1rem; font-size: .85rem; }
 .kicker, .eyebrow { font-family: var(--mono); font-size: .78rem; letter-spacing: .22em; text-transform: uppercase; color: var(--primary); margin-bottom: .6rem; }
 .lead { color: var(--muted); font-size: 1.03rem; }
  
@@ -319,14 +320,15 @@ body::after {
 .stat span { color: var(--muted); font-size: .88rem; }
  
 /* ---------- github dashboard ---------- */
-.dash { display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem; }
+.dash { display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem; min-width: 0; }
+.dash-graph { min-width: 0; }
 .dash-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-.dash-side { display: grid; gap: 1.2rem; }
+.dash-side { display: grid; gap: 1.2rem; min-width: 0; }
 .dash-side .card { display: flex; flex-direction: column; justify-content: center; }
 .dash-side p { margin: 0; font-size: .82rem; }
 .big { font-family: var(--display); font-size: 1.9rem; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.dash-langs { grid-column: 1 / -1; }
-.heatmap { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 3px; overflow-x: auto; padding-bottom: .4rem; }
+.dash-langs { grid-column: 1 / -1; min-width: 0; }
+.heatmap { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 3px; overflow-x: auto; max-width: 100%; padding-bottom: .4rem; }
 .heatmap i { width: 11px; height: 11px; border-radius: 3px; background: var(--surface-strong); }
 .heatmap i.l1 { background: color-mix(in oklab, var(--primary) 28%, transparent); }
 .heatmap i.l2 { background: color-mix(in oklab, var(--primary) 50%, transparent); }
@@ -424,6 +426,12 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   .live-clock { left: .7rem; bottom: .7rem; padding: .5rem .8rem; }
   .live-clock-text span { display: none; }
 }
+@media (max-width: 480px) {
+  /* A fixed corner badge fighting with the FAB/toast for the same cramped
+     space, and sitting on top of scrolling card text, reads as clutter on
+     the smallest screens — it's a nice-to-have, so it's the first to go. */
+  .live-clock { display: none; }
+}
 
 /* ---------- responsive ---------- */
 @media (max-width: 980px) {
@@ -436,6 +444,12 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
     padding: 1rem 1.25rem; display: none;
   }
   .nav-links.open { display: flex; }
+  /* On narrow screens the ambient glow blobs sit closer to content and read
+     as stray colored patches instead of soft background light — soften and
+     shrink them so they stay atmospheric, not distracting. */
+  .aurora { opacity: .3; filter: blur(60px); }
+  .aurora span { width: 62vw; height: 62vw; }
+  .profile-card::before { opacity: .2; filter: blur(36px); width: 100px; height: 100px; }
 }
 @media (max-width: 560px) {
   .cards-2 { grid-template-columns: 1fr; }
