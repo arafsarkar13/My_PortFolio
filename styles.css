@@ -4,39 +4,40 @@
    ========================================================= */
  
 :root {
-  --bg: #17140f;
-  --bg-soft: #201b14;
-  --surface: rgba(230, 220, 205, 0.05);
-  --surface-strong: rgba(230, 220, 205, 0.09);
-  --border: rgba(230, 220, 205, 0.13);
-  --fg: #f1ebe0;
-  --muted: #a89e8e;
-  --primary: #d97b3f;
-  --primary-2: #b8542f;
-  --accent: #e2ac52;
-  --grad: linear-gradient(120deg, var(--primary), var(--primary-2) 55%, var(--accent));
+  --bg: #10182a;
+  --bg-soft: #1a2438;
+  --surface: rgba(211, 225, 248, 0.05);
+  --surface-strong: rgba(211, 225, 248, 0.09);
+  --border: rgba(211, 225, 248, 0.14);
+  --fg: #eef3fc;
+  --muted: #9fb0cc;
+  --primary: #4c6690;
+  --primary-2: #2b3b58;
+  --accent: #d3e1f8;
+  --grad: linear-gradient(120deg, var(--accent), var(--primary) 55%, var(--primary-2));
   --shadow: 0 24px 70px -30px rgba(0, 0, 0, 0.9);
-  --glow: 0 0 0 1px var(--border), 0 30px 80px -40px rgba(217, 123, 63, 0.45);
+  --glow: 0 0 0 1px var(--border), 0 30px 80px -40px rgba(76, 102, 144, 0.5);
   --radius: 18px;
   --maxw: 1180px;
+  --nav-h: 76px;
   --font: "Manrope", system-ui, sans-serif;
   --display: "Sora", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
 }
  
 [data-theme="light"] {
-  --bg: #f4ede1;
-  --bg-soft: #fbf7ef;
-  --surface: rgba(50, 38, 24, 0.045);
-  --surface-strong: rgba(50, 38, 24, 0.08);
-  --border: rgba(50, 38, 24, 0.14);
-  --fg: #2a2116;
-  --muted: #6f6252;
-  --primary: #b85c2a;
-  --primary-2: #8c3f22;
-  --accent: #b9812b;
-  --shadow: 0 22px 60px -32px rgba(50, 32, 12, 0.35);
-  --glow: 0 0 0 1px var(--border), 0 26px 60px -40px rgba(184, 92, 42, 0.4);
+  --bg: #eef3fc;
+  --bg-soft: #ffffff;
+  --surface: rgba(16, 24, 42, 0.04);
+  --surface-strong: rgba(16, 24, 42, 0.07);
+  --border: rgba(16, 24, 42, 0.12);
+  --fg: #10182a;
+  --muted: #4c6690;
+  --primary: #2b3b58;
+  --primary-2: #10182a;
+  --accent: #4c6690;
+  --shadow: 0 22px 60px -32px rgba(16, 24, 42, 0.35);
+  --glow: 0 0 0 1px var(--border), 0 26px 60px -40px rgba(43, 59, 88, 0.4);
 }
  
 * { box-sizing: border-box; }
@@ -178,11 +179,15 @@ body::after {
 @keyframes drift { 50% { transform: translate3d(6vw, -5vh, 0) scale(1.15); } }
  
 /* ---------- nav ---------- */
-.nav { position: sticky; top: 0; z-index: 120; backdrop-filter: blur(16px); border-bottom: 1px solid transparent; transition: .3s; }
+.nav { position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 120; backdrop-filter: blur(16px); border-bottom: 1px solid transparent; transition: .3s; }
 .nav.scrolled { background: color-mix(in oklab, var(--bg) 78%, transparent); border-color: var(--border); }
+/* Nav is taken out of document flow now that it's fixed, so #main is pushed
+   down by its measured height (set as --nav-h via JS) to avoid the hero
+   content starting underneath it. */
+#main { padding-top: var(--nav-h); }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 0; }
 .brand { display: flex; align-items: center; gap: .6rem; font-family: var(--display); font-weight: 700; }
-.brand-mark { display: grid; place-content: center; width: 34px; height: 34px; border-radius: 11px; background: var(--grad); color: #211a10; font-size: .85rem; font-weight: 800; }
+.brand-mark { display: grid; place-content: center; width: 34px; height: 34px; border-radius: 11px; background: var(--grad); color: #0a0f1c; font-size: .85rem; font-weight: 800; }
 .nav-links { display: flex; gap: .25rem; flex-wrap: wrap; }
 .nav-links a { padding: .45rem .7rem; border-radius: 99px; font-size: .9rem; color: var(--muted); transition: .2s; }
 .nav-links a:hover, .nav-links a.active { color: var(--fg); background: var(--surface-strong); }
@@ -195,7 +200,7 @@ body::after {
  
 /* ---------- buttons / glass ---------- */
 .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .78rem 1.35rem; border-radius: 99px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
-.btn-primary { background: var(--grad); color: #211a10; box-shadow: 0 18px 40px -22px var(--primary); }
+.btn-primary { background: var(--grad); color: #0a0f1c; box-shadow: 0 18px 40px -22px var(--primary); }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 24px 50px -20px var(--primary); }
 .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--fg); }
 .btn-ghost:hover { background: var(--surface-strong); transform: translateY(-2px); }
@@ -257,9 +262,21 @@ body::after {
   background: linear-gradient(var(--bg), var(--bg)) padding-box,
               var(--grad) border-box;
   box-shadow: 0 10px 32px -14px color-mix(in oklab, var(--primary) 60%, transparent);
-  transition: transform .3s ease, box-shadow .3s ease;
+  transition: box-shadow .3s ease;
+  /* Position/rotation driven by JS via --scroll-y (scroll parallax);
+     transform is layered on top of that in the scroll-parallax rule below. */
+  will-change: transform;
 }
-.profile-top img:hover { transform: scale(1.04) rotate(-1deg); box-shadow: 0 14px 40px -12px color-mix(in oklab, var(--primary) 75%, transparent); }
+.profile-top img:hover { box-shadow: 0 14px 40px -12px color-mix(in oklab, var(--primary) 75%, transparent); }
+/* Scroll parallax: JS writes --pt-y / --pt-rot / --pt-scale as the page
+   scrolls, so the portrait drifts, tilts and scales instead of sitting
+   static in the card. Falls back to the plain hover scale/rotate above
+   when reduced motion is requested (JS skips setting the vars). */
+.profile-top img {
+  transform: translate3d(0, var(--pt-y, 0px), 0) rotate(var(--pt-rot, 0deg)) scale(var(--pt-scale, 1));
+  transition: transform .15s linear, box-shadow .3s ease;
+}
+.profile-top img:hover { transform: translate3d(0, var(--pt-y, 0px), 0) rotate(calc(var(--pt-rot, 0deg) - 2deg)) scale(calc(var(--pt-scale, 1) * 1.04)); }
 .profile-top h2 { font-size: 1.15rem; margin: 0; }
 .status { display: flex; align-items: center; gap: .45rem; font-size: .85rem; color: var(--primary); margin: .25rem 0 0; }
 .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 0 var(--primary); animation: pulse 2s infinite; }
@@ -300,7 +317,7 @@ body::after {
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.2rem; }
 .chip-btn { padding: .45rem .95rem; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font: inherit; font-size: .85rem; cursor: pointer; transition: .2s; }
 .chip-btn:hover { color: var(--fg); }
-.chip-btn.is-active { background: var(--grad); color: #211a10; border-color: transparent; font-weight: 600; }
+.chip-btn.is-active { background: var(--grad); color: #0a0f1c; border-color: transparent; font-weight: 600; }
 .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
 .skill { padding: 1.1rem; transition: transform .25s, box-shadow .25s; }
 .skill:hover { transform: translateY(-5px); box-shadow: var(--glow); }
@@ -403,7 +420,7 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 #contactSubmit { position: relative; }
 #contactSubmit .btn-spinner {
   display: none; width: 15px; height: 15px; border-radius: 50%;
-  border: 2px solid color-mix(in oklab, #211a10 30%, transparent); border-top-color: #211a10;
+  border: 2px solid color-mix(in oklab, #0a0f1c 30%, transparent); border-top-color: #0a0f1c;
   animation: spin .7s linear infinite;
 }
 #contactSubmit.is-loading .btn-label { opacity: .55; }
@@ -413,10 +430,55 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 .toast.error { border-color: color-mix(in oklab, #ff7a90 55%, var(--border)); }
  
 /* ---------- footer / fab / toast ---------- */
-.footer { border-top: 1px solid var(--border); padding: 1.6rem 0; }
-.footer-inner { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
-.footer-inner p { margin: 0; }
-.fab { position: fixed; right: 1.2rem; bottom: 1.2rem; width: 46px; height: 46px; border-radius: 50%; border: none; background: var(--grad); color: #211a10; font-size: 1.1rem; cursor: pointer; opacity: 0; pointer-events: none; transition: .3s; z-index: 130; box-shadow: 0 18px 40px -18px var(--primary); }
+.footer {
+  position: relative; overflow: hidden;
+  border-top: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg-soft) 96%, transparent);
+  padding: 2.4rem 0 0;
+}
+.footer-top { display: flex; justify-content: flex-end; padding-bottom: 1.2rem; }
+.footer-social { display: flex; gap: .55rem; }
+.footer-social a {
+  width: 38px; height: 38px; border-radius: 12px; display: grid; place-content: center;
+  background: var(--surface); border: 1px solid var(--border); color: var(--fg); transition: .2s;
+}
+.footer-social a:hover { background: var(--surface-strong); transform: translateY(-2px); color: var(--primary); }
+
+.footer-main {
+  display: grid; grid-template-columns: 1.4fr .9fr .9fr; gap: 2rem;
+  padding: 1.2rem 0 3rem; border-top: 1px solid var(--border);
+}
+.footer-tagline h2 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); margin: .2rem 0 0; line-height: 1.1; }
+.footer-col-title { font-family: var(--mono); font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--primary); margin: 0 0 .9rem; }
+.footer-links-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+.footer-links-grid a {
+  padding: .5rem .95rem; border-radius: 99px; font-size: .85rem;
+  background: var(--surface); border: 1px solid var(--border); color: var(--fg); transition: .2s;
+}
+.footer-links-grid a:hover { background: var(--surface-strong); color: var(--primary); }
+.footer-email { font-size: .95rem; color: var(--muted); word-break: break-all; }
+.footer-email:hover { color: var(--primary); }
+
+.footer-wordmark {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(4rem, 18vw, 12rem); line-height: .8; letter-spacing: -.02em;
+  text-align: center; white-space: nowrap;
+  color: transparent; -webkit-text-stroke: 1px var(--border);
+  background: linear-gradient(var(--bg-soft), var(--bg-soft));
+  -webkit-background-clip: text; background-clip: text;
+  user-select: none; pointer-events: none;
+  margin: 0 0 -.06em;
+}
+
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  padding: 1.1rem 0; border-top: 1px solid var(--border);
+  font-size: .82rem; color: var(--muted);
+}
+.footer-bottom p { margin: 0; }
+.footer-tag { font-family: var(--mono); letter-spacing: .04em; }
+.footer-bottom a:hover { color: var(--primary); }
+.fab { position: fixed; right: 1.2rem; bottom: 1.2rem; width: 46px; height: 46px; border-radius: 50%; border: none; background: var(--grad); color: #0a0f1c; font-size: 1.1rem; cursor: pointer; opacity: 0; pointer-events: none; transition: .3s; z-index: 130; box-shadow: 0 18px 40px -18px var(--primary); }
 .fab.show { opacity: 1; pointer-events: auto; }
 .fab:hover { transform: translateY(-3px); }
 .toast { position: fixed; left: 50%; bottom: 1.6rem; translate: -50% 20px; opacity: 0; background: var(--surface-strong); border: 1px solid var(--border); backdrop-filter: blur(16px); color: var(--fg); padding: .8rem 1.2rem; border-radius: 12px; z-index: 200; transition: .35s; pointer-events: none; font-size: .9rem; }
@@ -440,20 +502,22 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 .live-clock-text strong { font-size: .88rem; font-weight: 600; letter-spacing: .02em; }
 .live-clock-text span { font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 640px) {
-  .live-clock { left: .7rem; bottom: .7rem; padding: .5rem .8rem; }
-  .live-clock-text span { display: none; }
+  /* Keep the same floating pill as desktop, just shrink it and pull it in
+     from the edge so it clears the back-to-top FAB in the opposite corner. */
+  .live-clock { left: .7rem; bottom: .7rem; padding: .45rem .7rem .45rem .65rem; gap: .5rem; }
+  .live-clock-text strong { font-size: .76rem; }
+  .live-clock-text span { font-size: .6rem; }
 }
-@media (max-width: 480px) {
-  /* The fixed corner pill collides with scrolling content and the FAB on
-     the smallest screens — swap it for a compact readout inside the sticky
-     nav instead, so the clock stays visible without overlapping anything. */
-  .live-clock { display: none; }
-  .nav-clock { display: inline-block; }
+@media (max-width: 360px) {
+  /* Only on the very narrowest phones, drop the date/timezone meta line —
+     the dot + time still renders exactly like the desktop pill. */
+  .live-clock-text span { display: none; }
 }
 
 /* ---------- responsive ---------- */
 @media (max-width: 980px) {
   .hero-grid, .about-grid, .exp-grid, .contact-grid, .dash { grid-template-columns: 1fr; }
+  .footer-main { grid-template-columns: 1fr; gap: 1.8rem; }
   .dash-side { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   .menu-btn { display: flex; }
   .nav-links {
@@ -480,6 +544,8 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   .loader-rocket { font-size: 2rem; }
   .loader-access-title { font-size: clamp(1.35rem, 8vw, 1.9rem); }
   .hud-corner { width: 16px; height: 16px; }
+  .footer-top { justify-content: center; }
+  .footer-bottom { justify-content: center; text-align: center; }
 }
  
 /* =========================================================

@@ -95,7 +95,7 @@
   const saved = localStorage.getItem("theme");
   // Keep the mobile browser's own chrome (status bar / address bar) in sync
   // with the site's actual background, instead of leaving it default white.
-  const THEME_COLORS = { dark: "#17140f", light: "#f4ede1" };
+  const THEME_COLORS = { dark: "#10182a", light: "#eef3fc" };
   function syncThemeColorMeta(theme) {
     $("#metaThemeColor")?.setAttribute("content", THEME_COLORS[theme] || THEME_COLORS.dark);
   }
@@ -118,6 +118,17 @@
   navLinks.addEventListener("click", (e) => {
     if (e.target.tagName === "A") navLinks.classList.remove("open");
   });
+
+  // Nav is position:fixed now (stays pinned in place instead of scrolling
+  // with the page), which takes it out of document flow — measure its real
+  // height and feed it back in as --nav-h so #main's top padding always
+  // matches, even as the nav wraps to a taller row on small screens.
+  function setNavHeight() {
+    document.documentElement.style.setProperty("--nav-h", nav.offsetHeight + "px");
+  }
+  setNavHeight();
+  addEventListener("resize", setNavHeight);
+  if (document.fonts?.ready) document.fonts.ready.then(setNavHeight);
 
   const progress = $("#scrollProgress"),
     fab = $("#fab");
@@ -632,6 +643,37 @@
     }
   }
 
+  /* ---------- profile portrait scroll parallax ---------- */
+  // Drifts, tilts and scales the hero portrait as the page scrolls, driven
+  // by CSS custom properties consumed in styles.css (.profile-top img).
+  if (!reduced) {
+    const portrait = $(".profile-top img");
+    if (portrait) {
+      let pTicking = false;
+      const updatePortrait = () => {
+        const rect = portrait.getBoundingClientRect();
+        // 0 when the portrait sits at its natural spot, growing (either
+        // sign) as it scrolls up out of / down into view.
+        const centerOffset = rect.top + rect.height / 2 - innerHeight / 2;
+        const progress = Math.max(-1, Math.min(1, centerOffset / (innerHeight * 0.7)));
+        portrait.style.setProperty("--pt-y", (progress * -26).toFixed(2) + "px");
+        portrait.style.setProperty("--pt-rot", (progress * 8).toFixed(2) + "deg");
+        portrait.style.setProperty("--pt-scale", (1 - Math.abs(progress) * 0.08).toFixed(3));
+        pTicking = false;
+      };
+      addEventListener(
+        "scroll",
+        () => {
+          if (pTicking) return;
+          pTicking = true;
+          requestAnimationFrame(updatePortrait);
+        },
+        { passive: true },
+      );
+      updatePortrait();
+    }
+  }
+
   /* ---------- live clock ---------- */
   (function liveClock() {
     const timeEl = $("#clockTime"), metaEl = $("#clockMeta"), navEl = $("#navClockTime");
@@ -842,7 +884,7 @@
   /* ---------- console message for anyone peeking at devtools ---------- */
   console.log(
     "%cAS",
-    "font-family: 'Sora', sans-serif; font-weight: 800; font-size: 42px; background: linear-gradient(120deg,#d97b3f,#b8542f 55%,#e2ac52); -webkit-background-clip: text; background-clip: text; color: transparent;",
+    "font-family: 'Sora', sans-serif; font-weight: 800; font-size: 42px; background: linear-gradient(120deg,#d3e1f8,#4c6690 55%,#2b3b58); -webkit-background-clip: text; background-clip: text; color: transparent;",
   );
   console.log(
     "%cLooking at the source, huh? I like that.\nHey, I'm Araf — CSE student, web dev, future software engineer.\nIf you're hiring or just curious: arafsarkar13@gmail.com\nPS: try the Konami code on this page. ↑ ↑ ↓ ↓ ← → ← → B A",
@@ -1052,7 +1094,7 @@
       if (!matrixRunning) return;
       ctx.fillStyle = "rgba(0,0,0,0.06)";
       ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "#d97b3f";
+      ctx.fillStyle = "#4c6690";
       ctx.font = "14px monospace";
       drops.forEach((y, i) => {
         const ch = chars[Math.floor(Math.random() * chars.length)];
