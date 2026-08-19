@@ -4,19 +4,19 @@
    ========================================================= */
  
 :root {
-  --bg: #150e07;
-  --bg-soft: #1e140a;
-  --surface: rgba(255, 255, 255, 0.055);
-  --surface-strong: rgba(255, 255, 255, 0.095);
-  --border: rgba(255, 255, 255, 0.14);
-  --fg: #fdf3ea;
-  --muted: #c2ac97;
-  --primary: #ff8a3d;
-  --primary-2: #ff5b5b;
-  --accent: #ffc24d;
+  --bg: #17140f;
+  --bg-soft: #201b14;
+  --surface: rgba(230, 220, 205, 0.05);
+  --surface-strong: rgba(230, 220, 205, 0.09);
+  --border: rgba(230, 220, 205, 0.13);
+  --fg: #f1ebe0;
+  --muted: #a89e8e;
+  --primary: #d97b3f;
+  --primary-2: #b8542f;
+  --accent: #e2ac52;
   --grad: linear-gradient(120deg, var(--primary), var(--primary-2) 55%, var(--accent));
   --shadow: 0 24px 70px -30px rgba(0, 0, 0, 0.9);
-  --glow: 0 0 0 1px var(--border), 0 30px 80px -40px rgba(255, 138, 61, 0.5);
+  --glow: 0 0 0 1px var(--border), 0 30px 80px -40px rgba(217, 123, 63, 0.45);
   --radius: 18px;
   --maxw: 1180px;
   --font: "Manrope", system-ui, sans-serif;
@@ -25,18 +25,18 @@
 }
  
 [data-theme="light"] {
-  --bg: #faf6f1;
-  --bg-soft: #ffffff;
-  --surface: rgba(40, 22, 8, 0.04);
-  --surface-strong: rgba(40, 22, 8, 0.07);
-  --border: rgba(40, 22, 8, 0.12);
-  --fg: #241608;
-  --muted: #7a6858;
-  --primary: #e8650f;
-  --primary-2: #d43f3f;
-  --accent: #c98a12;
-  --shadow: 0 22px 60px -32px rgba(60, 30, 10, 0.35);
-  --glow: 0 0 0 1px var(--border), 0 26px 60px -40px rgba(232, 101, 15, 0.45);
+  --bg: #f4ede1;
+  --bg-soft: #fbf7ef;
+  --surface: rgba(50, 38, 24, 0.045);
+  --surface-strong: rgba(50, 38, 24, 0.08);
+  --border: rgba(50, 38, 24, 0.14);
+  --fg: #2a2116;
+  --muted: #6f6252;
+  --primary: #b85c2a;
+  --primary-2: #8c3f22;
+  --accent: #b9812b;
+  --shadow: 0 22px 60px -32px rgba(50, 32, 12, 0.35);
+  --glow: 0 0 0 1px var(--border), 0 26px 60px -40px rgba(184, 92, 42, 0.4);
 }
  
 * { box-sizing: border-box; }
@@ -74,6 +74,12 @@ body::after {
   position: fixed; inset: 0; z-index: 5; pointer-events: none;
   opacity: .045; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (max-width: 768px) {
+  /* This SVG turbulence filter, recomposited on every scroll frame across
+     the full viewport, is one of the heaviest things on the page for a
+     mobile GPU relative to how subtle it actually looks — cut for perf. */
+  body::after { display: none; }
 }
 
 /* scrollbar */
@@ -176,11 +182,12 @@ body::after {
 .nav.scrolled { background: color-mix(in oklab, var(--bg) 78%, transparent); border-color: var(--border); }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 0; }
 .brand { display: flex; align-items: center; gap: .6rem; font-family: var(--display); font-weight: 700; }
-.brand-mark { display: grid; place-content: center; width: 34px; height: 34px; border-radius: 11px; background: var(--grad); color: #1c0e04; font-size: .85rem; font-weight: 800; }
+.brand-mark { display: grid; place-content: center; width: 34px; height: 34px; border-radius: 11px; background: var(--grad); color: #211a10; font-size: .85rem; font-weight: 800; }
 .nav-links { display: flex; gap: .25rem; flex-wrap: wrap; }
 .nav-links a { padding: .45rem .7rem; border-radius: 99px; font-size: .9rem; color: var(--muted); transition: .2s; }
 .nav-links a:hover, .nav-links a.active { color: var(--fg); background: var(--surface-strong); }
-.nav-actions { display: flex; gap: .5rem; }
+.nav-actions { display: flex; align-items: center; gap: .5rem; }
+.nav-clock { display: none; font-size: .78rem; color: var(--muted); letter-spacing: .02em; }
 .icon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--fg); width: 38px; height: 38px; border-radius: 12px; cursor: pointer; display: grid; place-content: center; transition: .2s; }
 .icon-btn:hover { background: var(--surface-strong); transform: translateY(-1px); }
 .menu-btn { display: none; flex-direction: column; gap: 4px; }
@@ -188,13 +195,23 @@ body::after {
  
 /* ---------- buttons / glass ---------- */
 .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .78rem 1.35rem; border-radius: 99px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
-.btn-primary { background: var(--grad); color: #1c0e04; box-shadow: 0 18px 40px -22px var(--primary); }
+.btn-primary { background: var(--grad); color: #211a10; box-shadow: 0 18px 40px -22px var(--primary); }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 24px 50px -20px var(--primary); }
 .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--fg); }
 .btn-ghost:hover { background: var(--surface-strong); transform: translateY(-2px); }
  
 .glass { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); backdrop-filter: blur(18px); box-shadow: var(--shadow); transition: border-color .3s ease, box-shadow .3s ease; }
 .glass:hover { border-color: color-mix(in oklab, var(--primary) 30%, var(--border)); }
+@media (max-width: 768px) {
+  /* backdrop-filter is compositing every card against the layers behind it
+     on every scroll frame — with dozens of .glass cards on the page this is
+     a major jank source on mobile GPUs. Trade the frosted-glass look for a
+     flatter but near-identical solid tint here; costs nothing to render. */
+  .glass { backdrop-filter: none; background: color-mix(in oklab, var(--bg-soft) 88%, transparent); }
+  /* Same story for the sticky nav — it re-blurs on every scroll frame. */
+  .nav { backdrop-filter: none; }
+  .nav.scrolled { background: color-mix(in oklab, var(--bg) 96%, transparent); }
+}
 .card { padding: 1.4rem; }
 .card h3 { margin-bottom: .35rem; }
 .card p:last-child { margin-bottom: 0; }
@@ -283,7 +300,7 @@ body::after {
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.2rem; }
 .chip-btn { padding: .45rem .95rem; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font: inherit; font-size: .85rem; cursor: pointer; transition: .2s; }
 .chip-btn:hover { color: var(--fg); }
-.chip-btn.is-active { background: var(--grad); color: #1c0e04; border-color: transparent; font-weight: 600; }
+.chip-btn.is-active { background: var(--grad); color: #211a10; border-color: transparent; font-weight: 600; }
 .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
 .skill { padding: 1.1rem; transition: transform .25s, box-shadow .25s; }
 .skill:hover { transform: translateY(-5px); box-shadow: var(--glow); }
@@ -386,7 +403,7 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 #contactSubmit { position: relative; }
 #contactSubmit .btn-spinner {
   display: none; width: 15px; height: 15px; border-radius: 50%;
-  border: 2px solid color-mix(in oklab, #1c0e04 30%, transparent); border-top-color: #1c0e04;
+  border: 2px solid color-mix(in oklab, #211a10 30%, transparent); border-top-color: #211a10;
   animation: spin .7s linear infinite;
 }
 #contactSubmit.is-loading .btn-label { opacity: .55; }
@@ -399,7 +416,7 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 .footer { border-top: 1px solid var(--border); padding: 1.6rem 0; }
 .footer-inner { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
 .footer-inner p { margin: 0; }
-.fab { position: fixed; right: 1.2rem; bottom: 1.2rem; width: 46px; height: 46px; border-radius: 50%; border: none; background: var(--grad); color: #1c0e04; font-size: 1.1rem; cursor: pointer; opacity: 0; pointer-events: none; transition: .3s; z-index: 130; box-shadow: 0 18px 40px -18px var(--primary); }
+.fab { position: fixed; right: 1.2rem; bottom: 1.2rem; width: 46px; height: 46px; border-radius: 50%; border: none; background: var(--grad); color: #211a10; font-size: 1.1rem; cursor: pointer; opacity: 0; pointer-events: none; transition: .3s; z-index: 130; box-shadow: 0 18px 40px -18px var(--primary); }
 .fab.show { opacity: 1; pointer-events: auto; }
 .fab:hover { transform: translateY(-3px); }
 .toast { position: fixed; left: 50%; bottom: 1.6rem; translate: -50% 20px; opacity: 0; background: var(--surface-strong); border: 1px solid var(--border); backdrop-filter: blur(16px); color: var(--fg); padding: .8rem 1.2rem; border-radius: 12px; z-index: 200; transition: .35s; pointer-events: none; font-size: .9rem; }
@@ -427,10 +444,11 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   .live-clock-text span { display: none; }
 }
 @media (max-width: 480px) {
-  /* A fixed corner badge fighting with the FAB/toast for the same cramped
-     space, and sitting on top of scrolling card text, reads as clutter on
-     the smallest screens — it's a nice-to-have, so it's the first to go. */
+  /* The fixed corner pill collides with scrolling content and the FAB on
+     the smallest screens — swap it for a compact readout inside the sticky
+     nav instead, so the clock stays visible without overlapping anything. */
   .live-clock { display: none; }
+  .nav-clock { display: inline-block; }
 }
 
 /* ---------- responsive ---------- */
@@ -446,9 +464,13 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   .nav-links.open { display: flex; }
   /* On narrow screens the ambient glow blobs sit closer to content and read
      as stray colored patches instead of soft background light — soften and
-     shrink them so they stay atmospheric, not distracting. */
-  .aurora { opacity: .3; filter: blur(60px); }
+     shrink them so they stay atmospheric, not distracting. Also drop one
+     blob and reduce blur radius, since large-radius blur is one of the
+     more expensive things a mobile GPU has to keep repainting behind a
+     fixed, always-on element. */
+  .aurora { opacity: .3; filter: blur(38px); }
   .aurora span { width: 62vw; height: 62vw; }
+  .aurora span:nth-child(3) { display: none; }
   .profile-card::before { opacity: .2; filter: blur(36px); width: 100px; height: 100px; }
 }
 @media (max-width: 560px) {
