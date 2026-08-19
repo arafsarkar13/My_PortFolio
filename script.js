@@ -108,33 +108,36 @@
     syncThemeColorMeta(next);
   });
 
-  /* ---------- nav ---------- */
-  const nav = $("#nav"),
-    navLinks = $("#navLinks");
-  $("#menuToggle").addEventListener("click", (e) => {
-    const open = navLinks.classList.toggle("open");
-    e.currentTarget.setAttribute("aria-expanded", String(open));
-  });
-  navLinks.addEventListener("click", (e) => {
-    if (e.target.tagName === "A") navLinks.classList.remove("open");
-  });
+  /* ---------- nav (floating pill / dropdown) ---------- */
+  const navPill = $("#navPill"),
+    navLinks = $("#navLinks"),
+    menuToggle = $("#menuToggle");
 
-  // Nav is position:fixed now (stays pinned in place instead of scrolling
-  // with the page), which takes it out of document flow — measure its real
-  // height and feed it back in as --nav-h so #main's top padding always
-  // matches, even as the nav wraps to a taller row on small screens.
-  function setNavHeight() {
-    document.documentElement.style.setProperty("--nav-h", nav.offsetHeight + "px");
+  function closeNav() {
+    navPill.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
   }
-  setNavHeight();
-  addEventListener("resize", setNavHeight);
-  if (document.fonts?.ready) document.fonts.ready.then(setNavHeight);
+  function toggleNav() {
+    const open = navPill.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded", String(open));
+  }
+  menuToggle.addEventListener("click", toggleNav);
+  navLinks.addEventListener("click", (e) => {
+    if (e.target.tagName === "A") closeNav();
+  });
+  // Close on outside click / Escape, like a normal dropdown.
+  document.addEventListener("click", (e) => {
+    if (navPill.classList.contains("open") && !navPill.contains(e.target)) closeNav();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && navPill.classList.contains("open")) closeNav();
+  });
 
   const progress = $("#scrollProgress"),
     fab = $("#fab");
   const onScroll = () => {
     const y = window.scrollY;
-    nav.classList.toggle("scrolled", y > 20);
+    navPill.classList.toggle("scrolled", y > 20);
     fab.classList.toggle("show", y > 600);
     const h = document.body.scrollHeight - innerHeight;
     progress.style.width = (h > 0 ? (y / h) * 100 : 0) + "%";
@@ -673,6 +676,44 @@
       updatePortrait();
     }
   }
+
+  /* ---------- floating scroll portrait (outside the hero card) ---------- */
+  // A second copy of the portrait that lives fixed on the page, separate
+  // from the one inside the profile card. As the page scrolls it: (1)
+  // swings from edge-on to face-on over the first ~90% of a viewport height
+  // scrolled, and (2) travels down a vertical track tied to overall scroll
+  // progress through the whole document, so it's genuinely in a different
+  // place a moment later rather than sitting static.
+  (function floatingPortrait() {
+    const wrap = $("#floatPortrait");
+    if (!wrap || reduced) return;
+    let fTicking = false;
+    const TRACK_TOP_VH = 14,
+      TRACK_BOTTOM_VH = 76;
+    const updateFloat = () => {
+      const scrollableHeight = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+      const overall = Math.min(1, Math.max(0, scrollY / scrollableHeight));
+      const topVh = TRACK_TOP_VH + (TRACK_BOTTOM_VH - TRACK_TOP_VH) * overall;
+      wrap.style.top = topVh.toFixed(2) + "vh";
+
+      const flipRange = innerHeight * 0.9;
+      const flip = Math.min(1, Math.max(0, scrollY / flipRange));
+      const rot = -72 + flip * 72; // edge-on sliver -> facing forward
+      wrap.style.setProperty("--fp-rot", rot.toFixed(2) + "deg");
+      wrap.style.opacity = (0.28 + flip * 0.72).toFixed(2);
+      fTicking = false;
+    };
+    addEventListener(
+      "scroll",
+      () => {
+        if (fTicking) return;
+        fTicking = true;
+        requestAnimationFrame(updateFloat);
+      },
+      { passive: true },
+    );
+    updateFloat();
+  })();
 
   /* ---------- live clock ---------- */
   (function liveClock() {

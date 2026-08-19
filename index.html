@@ -51,10 +51,18 @@
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="nav" id="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="#hero"><span class="brand-mark">AS</span><span class="brand-name">Araf Sarkar</span></a>
-    <nav class="nav-links" id="navLinks" aria-label="Primary">
-      <a href="#about">About</a>
+  <div class="nav-pill" id="navPill">
+    <div class="nav-pill-bar">
+      <a class="nav-pill-brand" href="#hero">Araf</a>
+      <button id="menuToggle" class="nav-pill-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <span class="nav-pill-toggle-icon" aria-hidden="true">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="close">✕</span>
+        </span>
+      </button>
+    </div>
+    <nav class="nav-pill-menu" id="navLinks" aria-label="Primary">
+      <a href="#about">About Me</a>
       <a href="#education">Education</a>
       <a href="#skills">Skills</a>
       <a href="#projects">Projects</a>
@@ -63,14 +71,22 @@
       <a href="#hire">Why me</a>
       <a href="#blog">Blog</a>
       <a href="#contact">Contact</a>
+      <button type="button" id="themeToggle" class="nav-pill-theme" aria-label="Toggle color theme">
+        <span class="theme-icon">◐</span><span>Toggle theme</span>
+      </button>
+      <span class="nav-pill-clock mono" id="navClockTime" aria-hidden="true">--:--</span>
     </nav>
-    <div class="nav-actions">
-      <span class="nav-clock mono" id="navClockTime" aria-hidden="true">--:--</span>
-      <button id="themeToggle" class="icon-btn" aria-label="Toggle color theme"><span class="theme-icon">◐</span></button>
-      <button id="menuToggle" class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button>
-    </div>
   </div>
 </header>
+
+<!-- Floating portrait: separate from the hero profile card, drifts / rotates
+     into view as the page scrolls. Purely decorative, hidden on narrow
+     screens and for reduced-motion users. -->
+<div class="float-portrait" id="floatPortrait" aria-hidden="true">
+  <div class="float-portrait-inner">
+    <img src="assets/profile.jpg" width="400" height="500" alt="" loading="lazy" />
+  </div>
+</div>
 
 <main id="main">
 

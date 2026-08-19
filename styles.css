@@ -19,7 +19,6 @@
   --glow: 0 0 0 1px var(--border), 0 30px 80px -40px rgba(76, 102, 144, 0.5);
   --radius: 18px;
   --maxw: 1180px;
-  --nav-h: 76px;
   --font: "Manrope", system-ui, sans-serif;
   --display: "Sora", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
@@ -178,25 +177,85 @@ body::after {
 .aurora span:nth-child(3) { background: var(--accent); top: 38%; left: 45%; animation: drift 34s ease-in-out infinite; }
 @keyframes drift { 50% { transform: translate3d(6vw, -5vh, 0) scale(1.15); } }
  
-/* ---------- nav ---------- */
-.nav { position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 120; backdrop-filter: blur(16px); border-bottom: 1px solid transparent; transition: .3s; }
-.nav.scrolled { background: color-mix(in oklab, var(--bg) 78%, transparent); border-color: var(--border); }
-/* Nav is taken out of document flow now that it's fixed, so #main is pushed
-   down by its measured height (set as --nav-h via JS) to avoid the hero
-   content starting underneath it. */
-#main { padding-top: var(--nav-h); }
-.nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 0; }
-.brand { display: flex; align-items: center; gap: .6rem; font-family: var(--display); font-weight: 700; }
-.brand-mark { display: grid; place-content: center; width: 34px; height: 34px; border-radius: 11px; background: var(--grad); color: #0a0f1c; font-size: .85rem; font-weight: 800; }
-.nav-links { display: flex; gap: .25rem; flex-wrap: wrap; }
-.nav-links a { padding: .45rem .7rem; border-radius: 99px; font-size: .9rem; color: var(--muted); transition: .2s; }
-.nav-links a:hover, .nav-links a.active { color: var(--fg); background: var(--surface-strong); }
-.nav-actions { display: flex; align-items: center; gap: .5rem; }
-.nav-clock { display: none; font-size: .78rem; color: var(--muted); letter-spacing: .02em; }
+/* ---------- nav (floating pill / dropdown, "Majd"-style) ---------- */
+/* The header itself spans the full width so it can center the pill, but it
+   has no background of its own and lets clicks fall through everywhere
+   except the pill — that's what keeps it "fixed in place" without ever
+   blocking the page underneath it. */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 120; display: flex; justify-content: center; pointer-events: none; padding-top: clamp(.8rem, 2vw, 1.2rem); }
+/* Hero/content sits a fixed distance below the pill; unlike the old full-
+   width bar this no longer needs to match a measured nav height. */
+#main { padding-top: clamp(4.6rem, 9vw, 5.6rem); }
+
+.nav-pill {
+  pointer-events: auto;
+  width: min(88vw, 232px);
+  background: #10182a;
+  color: #f3f6fc;
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 22px 50px -22px rgba(0, 0, 0, .6);
+  transition: width .35s cubic-bezier(.4, 0, .2, 1), border-radius .3s ease, box-shadow .3s ease;
+}
+.nav-pill.scrolled { box-shadow: 0 26px 60px -20px rgba(0, 0, 0, .7); }
+.nav-pill.open { width: min(88vw, 266px); border-radius: 22px; }
+
+.nav-pill-bar { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .5rem .5rem .5rem 1.1rem; }
+.nav-pill-brand { font-family: var(--display); font-weight: 700; font-size: .95rem; color: inherit; letter-spacing: -.01em; }
+
+.nav-pill-toggle {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; border: none;
+  background: #fff; color: #10182a; cursor: pointer; display: grid; place-content: center;
+  transition: transform .2s ease;
+}
+.nav-pill-toggle:hover { transform: scale(1.06); }
+.nav-pill-toggle-icon { position: relative; width: 18px; height: 18px; display: grid; place-content: center; }
+.nav-pill-toggle-icon .dots { display: flex; gap: 3px; transition: opacity .2s ease, transform .2s ease; }
+.nav-pill-toggle-icon .dots i { width: 3.5px; height: 3.5px; border-radius: 50%; background: #10182a; }
+.nav-pill-toggle-icon .close { position: absolute; opacity: 0; transform: scale(.5) rotate(-45deg); font-size: .8rem; line-height: 1; transition: opacity .2s ease, transform .2s ease; }
+.nav-pill.open .nav-pill-toggle-icon .dots { opacity: 0; transform: scale(.5); }
+.nav-pill.open .nav-pill-toggle-icon .close { opacity: 1; transform: scale(1) rotate(0); }
+
+.nav-pill-menu {
+  display: flex; flex-direction: column; gap: .4rem;
+  max-height: 0; overflow: hidden; padding: 0 .7rem;
+  transition: max-height .4s cubic-bezier(.4, 0, .2, 1), padding .35s ease;
+}
+.nav-pill.open .nav-pill-menu { max-height: 640px; padding: 0 .7rem .8rem; }
+.nav-pill-menu a, .nav-pill-theme {
+  display: flex; align-items: center; gap: .4rem;
+  background: #fff; color: #10182a; border: none; border-radius: 14px;
+  padding: .65rem .95rem; font: inherit; font-size: .86rem; font-weight: 600;
+  text-align: left; cursor: pointer; transition: background .2s ease, transform .2s ease;
+}
+.nav-pill-menu a:hover, .nav-pill-theme:hover { background: #e7e9ee; }
+.nav-pill-menu a.active { background: #d7dbe4; }
+.nav-pill-theme .theme-icon { font-size: .95rem; }
+.nav-pill-clock { padding: .1rem .2rem .35rem; font-size: .72rem; color: #9fb0cc; text-align: center; }
+
+/* Buttons reused elsewhere on the page (testimonial prev/next, etc.) */
 .icon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--fg); width: 38px; height: 38px; border-radius: 12px; cursor: pointer; display: grid; place-content: center; transition: .2s; }
 .icon-btn:hover { background: var(--surface-strong); transform: translateY(-1px); }
-.menu-btn { display: none; flex-direction: column; gap: 4px; }
-.menu-btn span { width: 16px; height: 2px; background: var(--fg); border-radius: 2px; }
+
+/* ---------- floating scroll portrait ---------- */
+/* Lives outside the hero card entirely; JS drives --fp-rot (a 3D flip from
+   edge-on to face-on) and the element's `top` as the page scrolls, so it
+   travels to a different spot on the page rather than sitting static. */
+.float-portrait {
+  position: fixed; top: 18vh; right: 3vw; z-index: 45; pointer-events: none;
+  width: clamp(92px, 8.4vw, 150px); aspect-ratio: 3 / 4;
+  perspective: 900px; opacity: .3; will-change: top, opacity;
+}
+.float-portrait-inner {
+  width: 100%; height: 100%; border-radius: 16px; overflow: hidden;
+  background: var(--bg-soft); border: 1px solid var(--border);
+  box-shadow: 0 30px 60px -22px rgba(0, 0, 0, .55);
+  transform-style: preserve-3d;
+  transform: rotateY(var(--fp-rot, -72deg));
+  transition: transform .12s linear;
+}
+.float-portrait-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 1080px), (prefers-reduced-motion: reduce) { .float-portrait { display: none; } }
  
 /* ---------- buttons / glass ---------- */
 .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .78rem 1.35rem; border-radius: 99px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
@@ -213,9 +272,6 @@ body::after {
      a major jank source on mobile GPUs. Trade the frosted-glass look for a
      flatter but near-identical solid tint here; costs nothing to render. */
   .glass { backdrop-filter: none; background: color-mix(in oklab, var(--bg-soft) 88%, transparent); }
-  /* Same story for the sticky nav — it re-blurs on every scroll frame. */
-  .nav { backdrop-filter: none; }
-  .nav.scrolled { background: color-mix(in oklab, var(--bg) 96%, transparent); }
 }
 .card { padding: 1.4rem; }
 .card h3 { margin-bottom: .35rem; }
@@ -436,11 +492,11 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   background: color-mix(in oklab, var(--bg-soft) 96%, transparent);
   padding: 2.4rem 0 0;
 }
-.footer-top { display: flex; justify-content: flex-end; padding-bottom: 1.2rem; }
-.footer-social { display: flex; gap: .55rem; }
+.footer-top { display: flex; justify-content: flex-start; padding-bottom: 1.2rem; }
+.footer-social { display: flex; gap: .6rem; }
 .footer-social a {
-  width: 38px; height: 38px; border-radius: 12px; display: grid; place-content: center;
-  background: var(--surface); border: 1px solid var(--border); color: var(--fg); transition: .2s;
+  width: 40px; height: 40px; border-radius: 12px; display: grid; place-content: center;
+  background: var(--surface-strong); border: 1px solid var(--border); color: var(--fg); transition: .2s;
 }
 .footer-social a:hover { background: var(--surface-strong); transform: translateY(-2px); color: var(--primary); }
 
@@ -450,12 +506,12 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 }
 .footer-tagline h2 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); margin: .2rem 0 0; line-height: 1.1; }
 .footer-col-title { font-family: var(--mono); font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--primary); margin: 0 0 .9rem; }
-.footer-links-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+.footer-links-grid { display: flex; flex-wrap: wrap; gap: .5rem; max-width: 260px; }
 .footer-links-grid a {
-  padding: .5rem .95rem; border-radius: 99px; font-size: .85rem;
-  background: var(--surface); border: 1px solid var(--border); color: var(--fg); transition: .2s;
+  padding: .55rem 1.05rem; border-radius: 99px; font-size: .85rem; font-weight: 600;
+  background: color-mix(in oklab, var(--fg) 94%, var(--bg) 6%); color: var(--bg); border: 1px solid transparent; transition: .2s;
 }
-.footer-links-grid a:hover { background: var(--surface-strong); color: var(--primary); }
+.footer-links-grid a:hover { background: var(--fg); transform: translateY(-1px); }
 .footer-email { font-size: .95rem; color: var(--muted); word-break: break-all; }
 .footer-email:hover { color: var(--primary); }
 
@@ -502,16 +558,21 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 .live-clock-text strong { font-size: .88rem; font-weight: 600; letter-spacing: .02em; }
 .live-clock-text span { font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 640px) {
-  /* Keep the same floating pill as desktop, just shrink it and pull it in
-     from the edge so it clears the back-to-top FAB in the opposite corner. */
-  .live-clock { left: .7rem; bottom: .7rem; padding: .45rem .7rem .45rem .65rem; gap: .5rem; }
-  .live-clock-text strong { font-size: .76rem; }
-  .live-clock-text span { font-size: .6rem; }
+  /* Same pill, same two-line layout as desktop (dot + time on top, date /
+     timezone meta underneath) — just nudged in from the edge and scaled
+     down slightly so it clears the back-to-top FAB in the opposite corner.
+     The meta line is never hidden here, so mobile always matches desktop. */
+  .live-clock { left: .7rem; bottom: .7rem; padding: .5rem .8rem .5rem .7rem; gap: .55rem; }
+  .live-clock-dot { width: 7px; height: 7px; }
+  .live-clock-text strong { font-size: .78rem; }
+  .live-clock-text span { font-size: .62rem; }
 }
-@media (max-width: 360px) {
-  /* Only on the very narrowest phones, drop the date/timezone meta line —
-     the dot + time still renders exactly like the desktop pill. */
-  .live-clock-text span { display: none; }
+@media (max-width: 340px) {
+  /* Only trims further on the very narrowest phones — still keeps both
+     lines, just a touch smaller, instead of dropping the meta line. */
+  .live-clock { padding: .45rem .65rem .45rem .6rem; gap: .45rem; }
+  .live-clock-text strong { font-size: .72rem; }
+  .live-clock-text span { font-size: .58rem; }
 }
 
 /* ---------- responsive ---------- */
@@ -519,13 +580,6 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   .hero-grid, .about-grid, .exp-grid, .contact-grid, .dash { grid-template-columns: 1fr; }
   .footer-main { grid-template-columns: 1fr; gap: 1.8rem; }
   .dash-side { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-  .menu-btn { display: flex; }
-  .nav-links {
-    position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: .2rem;
-    background: color-mix(in oklab, var(--bg) 94%, transparent); border-bottom: 1px solid var(--border);
-    padding: 1rem 1.25rem; display: none;
-  }
-  .nav-links.open { display: flex; }
   /* On narrow screens the ambient glow blobs sit closer to content and read
      as stray colored patches instead of soft background light — soften and
      shrink them so they stay atmospheric, not distracting. Also drop one
