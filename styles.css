@@ -244,17 +244,21 @@ body::after {
 .float-portrait {
   position: fixed; top: 18vh; right: 3vw; z-index: 45; pointer-events: none;
   width: clamp(92px, 8.4vw, 150px); aspect-ratio: 3 / 4;
-  perspective: 900px; opacity: .3; will-change: top, opacity;
+  perspective: 900px; opacity: 0; will-change: top, opacity;
+  transition: opacity .4s ease;
 }
 .float-portrait-inner {
   width: 100%; height: 100%; border-radius: 16px; overflow: hidden;
   background: var(--bg-soft); border: 1px solid var(--border);
   box-shadow: 0 30px 60px -22px rgba(0, 0, 0, .55);
   transform-style: preserve-3d;
-  transform: rotateY(var(--fp-rot, -72deg));
+  transform: rotateY(var(--fp-rot, 0deg));
   transition: transform .12s linear;
 }
-.float-portrait-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.float-portrait-inner img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  backface-visibility: hidden;
+}
 @media (max-width: 1080px), (prefers-reduced-motion: reduce) { .float-portrait { display: none; } }
  
 /* ---------- buttons / glass ---------- */

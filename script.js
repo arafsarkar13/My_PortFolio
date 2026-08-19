@@ -53,10 +53,14 @@
   // Rotating status messages + a live percentage counter, purely cosmetic,
   // both self-terminate via hideLoader() so they never outlive the loader.
   const loaderMessages = [
-    "Compiling experience…", "Bundling curiosity…", "Linting the coffee…",
-    "Warming up the grid…", "Almost there…",
+    "Compiling experience…",
+    "Bundling curiosity…",
+    "Linting the coffee…",
+    "Warming up the grid…",
+    "Almost there…",
   ];
-  const loaderTextEl = $("#loaderText"), loaderPctEl = $("#loaderPct");
+  const loaderTextEl = $("#loaderText"),
+    loaderPctEl = $("#loaderPct");
   let loaderMsgIdx = 0;
   const loaderMsgTimer = loaderTextEl
     ? setInterval(() => {
@@ -86,7 +90,9 @@
   // Case 2: page restored from bfcache (iOS Safari / Android Chrome swipe-back)
   // — 'load' does not refire on restore, only 'pageshow' does. Skip the
   // multi-second boot animation entirely here — just snap it away.
-  window.addEventListener("pageshow", (e) => { if (e.persisted) hideLoaderInstant(); });
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) hideLoaderInstant();
+  });
   // Case 3: absolute safety net — never let a stalled font/asset trap the loader.
   setTimeout(hideLoader, 4500);
 
@@ -97,7 +103,10 @@
   // with the site's actual background, instead of leaving it default white.
   const THEME_COLORS = { dark: "#10182a", light: "#eef3fc" };
   function syncThemeColorMeta(theme) {
-    $("#metaThemeColor")?.setAttribute("content", THEME_COLORS[theme] || THEME_COLORS.dark);
+    $("#metaThemeColor")?.setAttribute(
+      "content",
+      THEME_COLORS[theme] || THEME_COLORS.dark,
+    );
   }
   if (saved) root.dataset.theme = saved;
   syncThemeColorMeta(root.dataset.theme || "dark");
@@ -127,7 +136,8 @@
   });
   // Close on outside click / Escape, like a normal dropdown.
   document.addEventListener("click", (e) => {
-    if (navPill.classList.contains("open") && !navPill.contains(e.target)) closeNav();
+    if (navPill.classList.contains("open") && !navPill.contains(e.target))
+      closeNav();
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && navPill.classList.contains("open")) closeNav();
@@ -470,7 +480,9 @@
     $("#repoCount").dataset.count = "18";
     $("#commitCount").dataset.count = "640";
     $("#streakCount").dataset.count = "26";
-    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(finalizeCounter);
+    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(
+      finalizeCounter,
+    );
     renderLangBars([
       ["JavaScript", 46],
       ["HTML", 22],
@@ -502,14 +514,17 @@
   function finalizeLangBars() {
     const langsCard = $("#langBars")?.closest(".reveal");
     if (langsCard && langsCard.classList.contains("in")) {
-      $$("#langBars .bar i").forEach((b) => (b.style.width = b.dataset.level + "%"));
+      $$("#langBars .bar i").forEach(
+        (b) => (b.style.width = b.dataset.level + "%"),
+      );
     }
   }
 
   async function loadLiveGithub(username) {
     // 1) profile — official GitHub REST API, no auth needed for this endpoint
     const userRes = await fetch(`https://api.github.com/users/${username}`);
-    if (!userRes.ok) throw new Error(`GitHub user lookup failed (${userRes.status})`);
+    if (!userRes.ok)
+      throw new Error(`GitHub user lookup failed (${userRes.status})`);
     const user = await userRes.json();
 
     // 2) contribution calendar — GitHub's own API only exposes this via
@@ -527,11 +542,13 @@
     for (let i = days.length - 1; i >= 0; i--) {
       const isToday = i === days.length - 1;
       if (days[i].count > 0) streak++;
-      else if (isToday) continue; // today may just not have activity yet
+      else if (isToday)
+        continue; // today may just not have activity yet
       else break;
     }
     renderHeatmap(days.map((d) => d.level ?? 0));
-    $("#contribTotal").textContent = totalContribs + " contributions · last year";
+    $("#contribTotal").textContent =
+      totalContribs + " contributions · last year";
 
     // 3) repos + languages — official REST API
     const reposRes = await fetch(
@@ -556,7 +573,9 @@
     $("#commitCount").dataset.count = String(totalContribs);
     $("#commitCount").dataset.suffix = "";
     $("#streakCount").dataset.count = String(streak);
-    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(finalizeCounter);
+    [$("#repoCount"), $("#commitCount"), $("#streakCount")].forEach(
+      finalizeCounter,
+    );
     if (langs.length) renderLangBars(langs);
     if (dashCaption)
       dashCaption.innerHTML = `Live data from <a href="https://github.com/${username}" target="_blank" rel="noopener">github.com/${username}</a> via the GitHub API.`;
@@ -564,7 +583,10 @@
 
   if (GITHUB_USERNAME) {
     loadLiveGithub(GITHUB_USERNAME).catch((err) => {
-      console.warn("Live GitHub data unavailable, showing illustrative snapshot:", err);
+      console.warn(
+        "Live GitHub data unavailable, showing illustrative snapshot:",
+        err,
+      );
       renderIllustrativeGithub();
     });
   } else {
@@ -594,7 +616,12 @@
   // Give siblings inside the same parent a small incremental delay, and — for
   // grids with several items — alternate the direction each one flies in from,
   // so sections feel dynamic instead of every card sliding up the same way.
-  const revealDirections = ["reveal-left", "reveal-right", "reveal-scale", "reveal-down"];
+  const revealDirections = [
+    "reveal-left",
+    "reveal-right",
+    "reveal-scale",
+    "reveal-down",
+  ];
   const revealGroups = new Map(); // parent -> array of its .reveal children, in order
   $$(".reveal").forEach((el) => {
     const parent = el.parentElement;
@@ -604,7 +631,8 @@
   revealGroups.forEach((siblings) => {
     siblings.forEach((el, idx) => {
       el.style.transitionDelay = Math.min(idx, 6) * 70 + "ms"; // cap so long grids don't lag too far
-      if (siblings.length > 1) el.classList.add(revealDirections[idx % revealDirections.length]);
+      if (siblings.length > 1)
+        el.classList.add(revealDirections[idx % revealDirections.length]);
     });
   });
 
@@ -658,10 +686,22 @@
         // 0 when the portrait sits at its natural spot, growing (either
         // sign) as it scrolls up out of / down into view.
         const centerOffset = rect.top + rect.height / 2 - innerHeight / 2;
-        const progress = Math.max(-1, Math.min(1, centerOffset / (innerHeight * 0.7)));
-        portrait.style.setProperty("--pt-y", (progress * -26).toFixed(2) + "px");
-        portrait.style.setProperty("--pt-rot", (progress * 8).toFixed(2) + "deg");
-        portrait.style.setProperty("--pt-scale", (1 - Math.abs(progress) * 0.08).toFixed(3));
+        const progress = Math.max(
+          -1,
+          Math.min(1, centerOffset / (innerHeight * 0.7)),
+        );
+        portrait.style.setProperty(
+          "--pt-y",
+          (progress * -26).toFixed(2) + "px",
+        );
+        portrait.style.setProperty(
+          "--pt-rot",
+          (progress * 8).toFixed(2) + "deg",
+        );
+        portrait.style.setProperty(
+          "--pt-scale",
+          (1 - Math.abs(progress) * 0.08).toFixed(3),
+        );
         pTicking = false;
       };
       addEventListener(
@@ -679,29 +719,78 @@
 
   /* ---------- floating scroll portrait (outside the hero card) ---------- */
   // A second copy of the portrait that lives fixed on the page, separate
-  // from the one inside the profile card. As the page scrolls it: (1)
-  // swings from edge-on to face-on over the first ~90% of a viewport height
-  // scrolled, and (2) travels down a vertical track tied to overall scroll
-  // progress through the whole document, so it's genuinely in a different
-  // place a moment later rather than sitting static.
+  // from the one inside the profile card. It's fully invisible at load —
+  // the moment the user scrolls even a little it fades in, then keeps
+  // spinning (a continuous 3D roundish tilt) the further they scroll down
+  // the whole document. Every half-turn, right as the card is edge-on
+  // (and briefly invisible thanks to backface-visibility: hidden), the
+  // photo underneath is swapped for the next one in FLOAT_PORTRAIT_IMAGES —
+  // so each "flip" quietly reveals a different picture.
   (function floatingPortrait() {
     const wrap = $("#floatPortrait");
-    if (!wrap || reduced) return;
+    const imgEl = wrap ? wrap.querySelector("img") : null;
+    if (!wrap || !imgEl || reduced) return;
+
+    // Add more photos here (in the order you want them revealed) and drop
+    // the files in /assets. First one should match the <img src> already
+    // in index.html so there's no flash on first load.
+    const FLOAT_PORTRAIT_IMAGES = [
+      "assets/profile.jpg",
+      "assets/profile-2.jpg",
+      "assets/profile-3.jpg",
+      "assets/profile-4.jpg",
+      "assets/profile-5.jpg",
+      "assets/profile-6.jpg",
+      "assets/profile-7.jpg",
+      "assets/profile-8.jpg",
+    ];
+    const SPIN_TOTAL_DEG = 1440; // total rotation across the whole page (4 full turns)
+    const FADE_IN_FRACTION = 0.03; // fully faded in by 3% of the page scrolled
+
     let fTicking = false;
+    let lastEdgeIndex = 0;
+    let lastImgIndex = 0;
     const TRACK_TOP_VH = 14,
       TRACK_BOTTOM_VH = 76;
+
     const updateFloat = () => {
-      const scrollableHeight = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+      fTicking = false;
+
+      if (scrollY <= 0) {
+        // Back at the very top: stay invisible, exactly like on first load.
+        wrap.style.opacity = "0";
+        return;
+      }
+
+      const scrollableHeight = Math.max(
+        1,
+        document.documentElement.scrollHeight - innerHeight,
+      );
       const overall = Math.min(1, Math.max(0, scrollY / scrollableHeight));
+
       const topVh = TRACK_TOP_VH + (TRACK_BOTTOM_VH - TRACK_TOP_VH) * overall;
       wrap.style.top = topVh.toFixed(2) + "vh";
 
-      const flipRange = innerHeight * 0.9;
-      const flip = Math.min(1, Math.max(0, scrollY / flipRange));
-      const rot = -72 + flip * 72; // edge-on sliver -> facing forward
+      const rot = overall * SPIN_TOTAL_DEG;
       wrap.style.setProperty("--fp-rot", rot.toFixed(2) + "deg");
-      wrap.style.opacity = (0.28 + flip * 0.72).toFixed(2);
-      fTicking = false;
+
+      const fadeIn = Math.min(1, overall / FADE_IN_FRACTION);
+      wrap.style.opacity = fadeIn.toFixed(2);
+
+      // Swap the photo every half-turn (90deg, 270deg, 450deg, ...) — the
+      // exact moment the card is edge-on and hidden, so the swap is invisible.
+      const edgeIndex = Math.floor((rot + 90) / 180);
+      if (edgeIndex !== lastEdgeIndex) {
+        lastEdgeIndex = edgeIndex;
+        const imgIndex =
+          ((edgeIndex % FLOAT_PORTRAIT_IMAGES.length) +
+            FLOAT_PORTRAIT_IMAGES.length) %
+          FLOAT_PORTRAIT_IMAGES.length;
+        if (imgIndex !== lastImgIndex) {
+          lastImgIndex = imgIndex;
+          imgEl.src = FLOAT_PORTRAIT_IMAGES[imgIndex];
+        }
+      }
     };
     addEventListener(
       "scroll",
@@ -717,17 +806,33 @@
 
   /* ---------- live clock ---------- */
   (function liveClock() {
-    const timeEl = $("#clockTime"), metaEl = $("#clockMeta"), navEl = $("#navClockTime");
+    const timeEl = $("#clockTime"),
+      metaEl = $("#clockMeta"),
+      navEl = $("#navClockTime");
     if (!timeEl && !navEl) return;
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     function tick() {
       const now = new Date();
-      const hm = now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-      if (timeEl) timeEl.textContent = now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      const hm = now.toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      if (timeEl)
+        timeEl.textContent = now.toLocaleTimeString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
       if (metaEl) {
         const day = now.toLocaleDateString(undefined, { weekday: "short" });
-        const date = now.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-        const tzShort = now.toLocaleTimeString(undefined, { timeZoneName: "short" }).split(" ").pop();
+        const date = now.toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+        });
+        const tzShort = now
+          .toLocaleTimeString(undefined, { timeZoneName: "short" })
+          .split(" ")
+          .pop();
         metaEl.textContent = `${day} · ${date} · ${tzShort || tz}`;
       }
       if (navEl) navEl.textContent = hm; // compact nav version updates once/minute in effect, no seconds needed
@@ -776,9 +881,9 @@
   //    {{subject}} {{message}} → copy its Template ID below.
   // 4. Account → API Keys → copy your Public Key below.
   const EMAILJS_CONFIG = {
-    publicKey: "YOUR_PUBLIC_KEY",
-    serviceId: "YOUR_SERVICE_ID",
-    templateId: "YOUR_TEMPLATE_ID",
+    publicKey: "y25KFHMwc90d3gnzJ",
+    serviceId: "service_madfq7a",
+    templateId: "template_qho1xqd",
   };
   const emailjsReady =
     typeof emailjs !== "undefined" &&
@@ -907,7 +1012,10 @@
         form.reset();
       } else {
         console.error("Contact send failed:", results);
-        showToast("Couldn't send right now — please try again or email me directly.", true);
+        showToast(
+          "Couldn't send right now — please try again or email me directly.",
+          true,
+        );
       }
       setSending(false);
     });
