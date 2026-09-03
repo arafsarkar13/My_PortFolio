@@ -79,21 +79,23 @@
   </div>
 </header>
 
-<!-- Floating portrait: separate from the hero profile card, drifts / rotates
-     into view as the page scrolls. Purely decorative, hidden on narrow
-     screens and for reduced-motion users. -->
-<div class="float-portrait" id="floatPortrait" aria-hidden="true">
-  <div class="float-portrait-inner">
-    <img src="assets/profile.jpg" width="400" height="500" alt="" loading="lazy" />
-  </div>
-</div>
-
 <main id="main">
 
-<!-- HERO -->
+<!-- HERO INTRO — the wrapper is taller than the viewport on purpose: the
+     hero inside it is sticky/pinned, so scrolling through this extra
+     height is what drives the portal opening (see updatePortalScroll in
+     script.js), instead of it happening automatically on a timer. -->
+<div class="hero-intro" id="heroIntro">
 <section id="hero" class="hero">
-  <div class="floaters" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="container hero-grid">
+  <div class="portal-image" aria-hidden="true"><img class="portal-photo" src="assets/profile-6.jpg" alt="" loading="eager" width="4080" height="3060" /></div>
+  <div class="floaters" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="hero-portal" id="heroPortal" aria-hidden="true">
+    <div class="portal-panel portal-panel-left"></div>
+    <div class="portal-panel portal-panel-right"></div>
+    <p class="wordmark"><span class="wordmark-half wordmark-left">Ar</span><span class="wordmark-half wordmark-right">af</span></p>
+  </div>
+  <div class="container">
+    <div class="hero-single">
     <div class="hero-copy reveal">
       <p class="eyebrow">CSE Student · Web Developer · Future Software Engineer</p>
       <h1>Building Digital Experiences Through <span class="grad">Code and Creativity</span></h1>
@@ -108,7 +110,18 @@
         <li>CSE Student</li><li>Web Developer</li><li>Problem Solver</li><li>Lifelong Learner</li>
       </ul>
     </div>
+    </div>
+  </div>
+  <a class="scroll-indicator" href="#about" aria-label="Scroll to open">
+    <span class="scroll-indicator-label">Scroll to open</span>
+    <span class="scroll-indicator-pill"><span></span></span>
+  </a>
+</section>
+</div>
 
+<!-- PROFILE -->
+<section id="profile" class="section profile-section">
+  <div class="container">
     <aside class="glass profile-card reveal">
       <div class="profile-top">
         <img src="assets/profile.jpg" width="768" height="768" alt="Portrait of Md Araf Islam Sarkar" />
@@ -130,7 +143,6 @@
 };</pre>
     </aside>
   </div>
-  <a class="scroll-indicator" href="#about" aria-label="Scroll to about"><span></span></a>
 </section>
 
 <!-- ABOUT -->
@@ -208,6 +220,7 @@
     <header class="section-head reveal">
       <p class="kicker">04 — Projects</p>
       <h2>Featured work</h2>
+      <p class="muted">Drag a card aside to see the next one, or use the button below.</p>
       <div class="filters" id="projectFilters">
         <button class="chip-btn is-active" data-filter="all">All</button>
         <button class="chip-btn" data-filter="frontend">Frontend</button>
@@ -215,7 +228,12 @@
         <button class="chip-btn" data-filter="upcoming">Upcoming</button>
       </div>
     </header>
-    <div class="project-grid" id="projectGrid"></div>
+    <div class="project-grid crate reveal" id="projectGrid"></div>
+    <div class="crate-controls reveal">
+      <button type="button" class="btn btn-ghost" id="crateSkip">Set this one aside →</button>
+      <p class="crate-progress mono muted" id="crateProgress"></p>
+      <button type="button" class="btn btn-ghost" id="crateReset" hidden>Reshuffle the deck</button>
+    </div>
   </div>
 </section>
 

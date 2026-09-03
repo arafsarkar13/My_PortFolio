@@ -7,6 +7,7 @@
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let portalScrollReady = false; // gate: the portal only responds to scroll once the loader is done
 
   /* ---------- loader ---------- */
   const LOADER_MIN_MS = 3000; // the site must stay on the loader at least this long
@@ -22,6 +23,21 @@
     clearInterval(loaderPctTimer);
     const loader = $("#loader");
     if (loader) loader.classList.add("done");
+    openHeroPortal();
+  }
+
+  // Once the loader is gone, the hero portal is a closed "name screen"
+  // (see index.html) until the user scrolls — updatePortalScroll() below
+  // does the actual opening. Reduced-motion users skip the scroll-scrub
+  // entirely (see the .hero-intro / .hero media query in styles.css) and
+  // just get the portal already open.
+  function openHeroPortal() {
+    if (reduced) {
+      $("#heroPortal")?.classList.add("is-open");
+      return;
+    }
+    portalScrollReady = true;
+    if (typeof updatePortalScroll === "function") updatePortalScroll();
   }
 
   // Normal exit: snap to 100%, hold briefly, swap to the "access granted"
@@ -37,7 +53,10 @@
     setTimeout(() => {
       $("#loaderBoot")?.classList.remove("active");
       $("#loaderAccess")?.classList.add("active");
-      setTimeout(() => $("#loader")?.classList.add("done"), 950);
+      setTimeout(() => {
+        $("#loader")?.classList.add("done");
+        openHeroPortal();
+      }, 950);
     }, 300);
   }
 
@@ -145,14 +164,71 @@
 
   const progress = $("#scrollProgress"),
     fab = $("#fab");
+
+  /* ---------- hero portal: scroll-scrubbed open (see updatePortalScroll) ---------- */
+  const heroIntro = $("#heroIntro");
+  const panelLeft = $(".portal-panel-left");
+  const panelRight = $(".portal-panel-right");
+  const wmEl = $(".wordmark");
+  const wmLeft = $(".wordmark-left");
+  const wmRight = $(".wordmark-right");
+  let portalTicking = false;
+
+  function updatePortalScroll() {
+    portalTicking = false;
+    if (!portalScrollReady || !heroIntro || !panelLeft || !panelRight) return;
+    const runway = heroIntro.offsetHeight - innerHeight;
+    const scrolled = window.scrollY - heroIntro.offsetTop;
+    const p = Math.min(Math.max(runway > 0 ? scrolled / runway : 1, 0), 1);
+
+    // Phase 1 — first 35% of the scroll: only the wordmark moves. It
+    // shrinks, tightens, and fades to a real, total 0. Panels untouched.
+    const SPLIT = 0.35;
+    const wordP = Math.min(p / SPLIT, 1);
+    wmEl.style.letterSpacing = `${0.05 - 0.07 * wordP}em`;
+    wmEl.style.opacity = `${1 - wordP}`;
+    wmEl.style.transform = `translate(-50%, -50%) scale(${1 - 0.25 * wordP})`;
+    wmLeft.style.transform = "none";
+    wmRight.style.transform = "none";
+
+    // Phase 2 — remaining 65%: panelP is mathematically 0 until p passes
+    // SPLIT, so the panels cannot move even a pixel before the wordmark
+    // has already reached 0 opacity.
+    const panelP = Math.max((p - SPLIT) / (1 - SPLIT), 0);
+    panelLeft.style.transform = `translateX(${-100 * panelP}%)`;
+    panelRight.style.transform = `translateX(${100 * panelP}%)`;
+  }
+
+  /* ---------- live clock: step out of the way once the footer is in view ---------- */
+  const liveClock = $("#liveClock");
+  const footerEl = $("#site-footer");
+  if (liveClock && footerEl) {
+    new IntersectionObserver(
+      (entries) =>
+        entries.forEach((en) =>
+          liveClock.classList.toggle("is-hidden", en.isIntersecting),
+        ),
+      { threshold: 0.01 },
+    ).observe(footerEl);
+  }
+
   const onScroll = () => {
     const y = window.scrollY;
     navPill.classList.toggle("scrolled", y > 20);
     fab.classList.toggle("show", y > 600);
     const h = document.body.scrollHeight - innerHeight;
     progress.style.width = (h > 0 ? (y / h) * 100 : 0) + "%";
+    if (!portalTicking) {
+      portalTicking = true;
+      requestAnimationFrame(updatePortalScroll);
+    }
   };
   addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", () => {
+    if (portalTicking) return;
+    portalTicking = true;
+    requestAnimationFrame(updatePortalScroll);
+  });
   onScroll();
   fab.addEventListener("click", () =>
     scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }),
@@ -327,7 +403,7 @@
   $("#projectGrid").innerHTML = projects
     .map(
       (p, i) => `
-    <article class="glass project reveal" data-cat="${p.cat}">
+    <article class="glass project" data-cat="${p.cat}">
       <figure><img loading="lazy" src="${p.img}" width="1024" height="640" alt="${p.title} preview" /></figure>
       <div class="project-body">
         <span class="project-index mono">Project 0${i + 1}</span>
@@ -610,7 +686,120 @@
     });
   }
   wireFilter("#skillFilters", ".skill");
-  wireFilter("#projectFilters", ".project");
+
+  /* ---------- catalogue crate (throw-aside project deck) ---------- */
+  const crate = $("#projectGrid");
+  const allCards = $$(".project", crate);
+  const crateProgressEl = $("#crateProgress");
+  const crateSkipBtn = $("#crateSkip");
+  const crateResetBtn = $("#crateReset");
+  const THROW_THRESHOLD = 110;
+  let order = allCards.slice();
+
+  function layoutCrate() {
+    order.forEach((card, i) => {
+      card.classList.remove("is-thrown");
+      card.style.zIndex = order.length - i;
+      if (i === 0) {
+        card.style.transform = "translate(0,0) rotate(0deg)";
+        card.style.opacity = "1";
+        card.tabIndex = 0;
+      } else if (i < 4) {
+        const rot = (i % 2 === 0 ? 1 : -1) * (i * 1.6);
+        card.style.transform = `translate(0, ${i * 3}px) rotate(${rot}deg)`;
+        card.style.opacity = "1";
+        card.tabIndex = -1;
+      } else {
+        card.style.opacity = "0";
+        card.tabIndex = -1;
+      }
+    });
+    if (crateProgressEl) {
+      crateProgressEl.textContent = order.length
+        ? `Card ${allCards.length - order.length + 1} of ${allCards.length}`
+        : "Deck's empty.";
+    }
+    if (crateSkipBtn) crateSkipBtn.hidden = order.length === 0;
+    if (crateResetBtn) crateResetBtn.hidden = order.length !== 0;
+  }
+
+  function throwTop(dx, dy) {
+    if (!order.length) return;
+    const card = order.shift();
+    const angle = dx >= 0 ? 18 : -18;
+    card.classList.add("is-thrown");
+    card.style.transform = `translate(${dx * 3}px, ${dy * 3 + 40}px) rotate(${angle}deg)`;
+    layoutCrate();
+  }
+
+  function resetCrate() {
+    order = allCards.filter((c) => !c.classList.contains("hide"));
+    allCards.forEach((c) => (c.style.transition = "none"));
+    layoutCrate();
+    requestAnimationFrame(() =>
+      allCards.forEach((c) => (c.style.transition = "")),
+    );
+  }
+
+  crateSkipBtn?.addEventListener("click", () => throwTop(160, -40));
+  crateResetBtn?.addEventListener("click", resetCrate);
+
+  allCards.forEach((card) => {
+    card.addEventListener("keydown", (e) => {
+      if (order[0] !== card) return;
+      if (e.key === "ArrowRight" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        throwTop(160, -40);
+      }
+    });
+  });
+
+  let dragState = null;
+  crate?.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("a")) return; // let GitHub / live-demo links click normally
+    const card = order[0];
+    if (!card || e.target.closest(".project") !== card) return;
+    dragState = { card, startX: e.clientX, startY: e.clientY, dx: 0, dy: 0 };
+    card.classList.add("is-dragging");
+  });
+  addEventListener("pointermove", (e) => {
+    if (!dragState) return;
+    dragState.dx = e.clientX - dragState.startX;
+    dragState.dy = e.clientY - dragState.startY;
+    dragState.card.style.transform = `translate(${dragState.dx}px, ${dragState.dy}px) rotate(${dragState.dx / 18}deg)`;
+  });
+  function endDrag() {
+    if (!dragState) return;
+    const { card, dx, dy } = dragState;
+    card.classList.remove("is-dragging");
+    if (Math.abs(dx) > THROW_THRESHOLD || Math.abs(dy) > THROW_THRESHOLD) {
+      throwTop(dx, dy);
+    } else {
+      card.style.transform = "";
+      layoutCrate();
+    }
+    dragState = null;
+  }
+  addEventListener("pointerup", endDrag);
+  addEventListener("pointercancel", endDrag);
+
+  /* filter chips rebuild the stack from scratch instead of just hiding
+     cards in place, since a hidden card still can't hold a slot in the deck */
+  $("#projectFilters")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".chip-btn");
+    if (!btn) return;
+    $$(".chip-btn", $("#projectFilters")).forEach((b) =>
+      b.classList.toggle("is-active", b === btn),
+    );
+    const f = btn.dataset.filter;
+    allCards.forEach((c) =>
+      c.classList.toggle("hide", f !== "all" && c.dataset.cat !== f),
+    );
+    order = allCards.filter((c) => !c.classList.contains("hide"));
+    layoutCrate();
+  });
+
+  layoutCrate();
 
   /* ---------- reveal + counters + bars (with stagger + direction) ---------- */
   // Give siblings inside the same parent a small incremental delay, and — for
@@ -716,93 +905,6 @@
       updatePortrait();
     }
   }
-
-  /* ---------- floating scroll portrait (outside the hero card) ---------- */
-  // A second copy of the portrait that lives fixed on the page, separate
-  // from the one inside the profile card. It's fully invisible at load —
-  // the moment the user scrolls even a little it fades in, then keeps
-  // spinning (a continuous 3D roundish tilt) the further they scroll down
-  // the whole document. Every half-turn, right as the card is edge-on
-  // (and briefly invisible thanks to backface-visibility: hidden), the
-  // photo underneath is swapped for the next one in FLOAT_PORTRAIT_IMAGES —
-  // so each "flip" quietly reveals a different picture.
-  (function floatingPortrait() {
-    const wrap = $("#floatPortrait");
-    const imgEl = wrap ? wrap.querySelector("img") : null;
-    if (!wrap || !imgEl || reduced) return;
-
-    // Add more photos here (in the order you want them revealed) and drop
-    // the files in /assets. First one should match the <img src> already
-    // in index.html so there's no flash on first load.
-    const FLOAT_PORTRAIT_IMAGES = [
-      "assets/profile.jpg",
-      "assets/profile-2.jpg",
-      "assets/profile-3.jpg",
-      "assets/profile-4.jpg",
-      "assets/profile-5.jpg",
-      "assets/profile-6.jpg",
-      "assets/profile-7.jpg",
-      "assets/profile-8.jpg",
-    ];
-    const SPIN_TOTAL_DEG = 1440; // total rotation across the whole page (4 full turns)
-    const FADE_IN_FRACTION = 0.03; // fully faded in by 3% of the page scrolled
-
-    let fTicking = false;
-    let lastEdgeIndex = 0;
-    let lastImgIndex = 0;
-    const TRACK_TOP_VH = 14,
-      TRACK_BOTTOM_VH = 76;
-
-    const updateFloat = () => {
-      fTicking = false;
-
-      if (scrollY <= 0) {
-        // Back at the very top: stay invisible, exactly like on first load.
-        wrap.style.opacity = "0";
-        return;
-      }
-
-      const scrollableHeight = Math.max(
-        1,
-        document.documentElement.scrollHeight - innerHeight,
-      );
-      const overall = Math.min(1, Math.max(0, scrollY / scrollableHeight));
-
-      const topVh = TRACK_TOP_VH + (TRACK_BOTTOM_VH - TRACK_TOP_VH) * overall;
-      wrap.style.top = topVh.toFixed(2) + "vh";
-
-      const rot = overall * SPIN_TOTAL_DEG;
-      wrap.style.setProperty("--fp-rot", rot.toFixed(2) + "deg");
-
-      const fadeIn = Math.min(1, overall / FADE_IN_FRACTION);
-      wrap.style.opacity = fadeIn.toFixed(2);
-
-      // Swap the photo every half-turn (90deg, 270deg, 450deg, ...) — the
-      // exact moment the card is edge-on and hidden, so the swap is invisible.
-      const edgeIndex = Math.floor((rot + 90) / 180);
-      if (edgeIndex !== lastEdgeIndex) {
-        lastEdgeIndex = edgeIndex;
-        const imgIndex =
-          ((edgeIndex % FLOAT_PORTRAIT_IMAGES.length) +
-            FLOAT_PORTRAIT_IMAGES.length) %
-          FLOAT_PORTRAIT_IMAGES.length;
-        if (imgIndex !== lastImgIndex) {
-          lastImgIndex = imgIndex;
-          imgEl.src = FLOAT_PORTRAIT_IMAGES[imgIndex];
-        }
-      }
-    };
-    addEventListener(
-      "scroll",
-      () => {
-        if (fTicking) return;
-        fTicking = true;
-        requestAnimationFrame(updateFloat);
-      },
-      { passive: true },
-    );
-    updateFloat();
-  })();
 
   /* ---------- live clock ---------- */
   (function liveClock() {

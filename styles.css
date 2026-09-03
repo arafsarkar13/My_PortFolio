@@ -22,7 +22,9 @@
   --font: "Manrope", system-ui, sans-serif;
   --display: "Sora", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
+  --edge: 34vw;
 }
+@media (max-width: 640px) { :root { --edge: calc(50vw - 1rem); } }
  
 [data-theme="light"] {
   --bg: #eef3fc;
@@ -48,7 +50,6 @@ body {
   font-family: var(--font);
   font-size: 16px;
   line-height: 1.65;
-  overflow-x: hidden;
   transition: background .4s ease, color .4s ease;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -237,30 +238,6 @@ body::after {
 .icon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--fg); width: 38px; height: 38px; border-radius: 12px; cursor: pointer; display: grid; place-content: center; transition: .2s; }
 .icon-btn:hover { background: var(--surface-strong); transform: translateY(-1px); }
 
-/* ---------- floating scroll portrait ---------- */
-/* Lives outside the hero card entirely; JS drives --fp-rot (a 3D flip from
-   edge-on to face-on) and the element's `top` as the page scrolls, so it
-   travels to a different spot on the page rather than sitting static. */
-.float-portrait {
-  position: fixed; top: 18vh; right: 3vw; z-index: 45; pointer-events: none;
-  width: clamp(92px, 8.4vw, 150px); aspect-ratio: 3 / 4;
-  perspective: 900px; opacity: 0; will-change: top, opacity;
-  transition: opacity .4s ease;
-}
-.float-portrait-inner {
-  width: 100%; height: 100%; border-radius: 16px; overflow: hidden;
-  background: var(--bg-soft); border: 1px solid var(--border);
-  box-shadow: 0 30px 60px -22px rgba(0, 0, 0, .55);
-  transform-style: preserve-3d;
-  transform: rotateY(var(--fp-rot, 0deg));
-  transition: transform .12s linear;
-}
-.float-portrait-inner img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  backface-visibility: hidden;
-}
-@media (max-width: 1080px), (prefers-reduced-motion: reduce) { .float-portrait { display: none; } }
- 
 /* ---------- buttons / glass ---------- */
 .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .78rem 1.35rem; border-radius: 99px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
 .btn-primary { background: var(--grad); color: #0a0f1c; box-shadow: 0 18px 40px -22px var(--primary); }
@@ -298,8 +275,71 @@ body::after {
 .reveal.in { opacity: 1; transform: none; }
  
 /* ---------- hero ---------- */
-.hero { position: relative; padding: clamp(3.5rem, 8vw, 6rem) 0 5rem; overflow: hidden; }
-.hero-grid { display: grid; grid-template-columns: 1.25fr .85fr; gap: 3rem; align-items: center; }
+.hero-intro { position: relative; height: 220vh; }
+@media (prefers-reduced-motion: reduce) { .hero-intro { height: auto; } }
+
+.hero { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; padding: clamp(5rem, 9vw, 7rem) 0 6rem; overflow: hidden; }
+@media (max-width: 640px) { .hero { height: 100svh; padding: 6rem 0 5rem; } }
+@media (prefers-reduced-motion: reduce) { .hero { position: relative; height: auto; min-height: 86vh; } }
+.hero-single { position: relative; z-index: 5; max-width: 42rem; }
+
+/* full-bleed backdrop the portal panels uncover — a landscape photo crops
+   gracefully with object-fit: cover (unlike the tall portrait used before),
+   so this one can genuinely fill the hero edge-to-edge. */
+.portal-image {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  overflow: hidden; background: var(--bg);
+}
+.portal-photo {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 45% 38%;
+  filter: saturate(.94);
+}
+.portal-image::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(100deg, color-mix(in oklab, var(--bg) 88%, transparent) 0%, color-mix(in oklab, var(--bg) 55%, transparent) 42%, color-mix(in oklab, var(--bg) 18%, transparent) 75%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 30%);
+}
+
+/* the portal itself: two panels covering the hero, plus the wordmark they
+   reveal as they part. Purely decorative (aria-hidden) — the real
+   headline sits underneath and is already in place when the panels move,
+   so nothing needs to be duplicated here.
+   No CSS transition here on purpose: while .hero-intro has scroll runway,
+   updatePortalScroll() in script.js sets these transforms directly, once
+   per scroll frame, so they track the scrollbar 1:1 instead of chasing it.
+   The .is-open endpoint rules below only fire for reduced-motion users,
+   where JS skips the scroll-scrub and jumps straight to the open state. */
+.hero-portal { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+.portal-panel { position: absolute; top: 0; bottom: 0; width: 50%; background: var(--bg); }
+.portal-panel-left { left: 0; }
+.portal-panel-right { right: 0; }
+.hero-portal.is-open .portal-panel-left { transform: translateX(-100%); }
+.hero-portal.is-open .portal-panel-right { transform: translateX(100%); }
+
+.wordmark {
+  position: absolute; top: 40%; left: 50%; margin: 0;
+  transform: translate(-50%, -50%);
+  display: flex;
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(3rem, 15vw, 9.5rem); letter-spacing: .05em;
+  color: var(--fg); opacity: 1; white-space: nowrap;
+}
+.hero-portal.is-open .wordmark { letter-spacing: -.02em; opacity: .32; }
+.wordmark-half { display: inline-block; }
+.hero-portal.is-open .wordmark-left { transform: translate(calc(var(--edge) * -1), 0) rotate(-90deg) scale(1.2); }
+.hero-portal.is-open .wordmark-right { transform: translate(var(--edge), 0) rotate(90deg) scale(1.2); }
+
+@media (max-width: 640px) {
+  /* the mobile container has very little side gutter, so a permanent edge
+     mark ends up sitting on top of the CTA buttons instead of beside them
+     (as it does on desktop) — let it complete the grow-and-travel motion,
+     then fade out rather than linger there */
+  .hero-portal.is-open .wordmark { opacity: 0; }
+  .hero-portal.is-open .wordmark-left { transform: translate(calc(var(--edge) * -1), 0) rotate(-90deg) scale(1.05); }
+  .hero-portal.is-open .wordmark-right { transform: translate(var(--edge), 0) rotate(90deg) scale(1.05); }
+}
 .type-line { font-family: var(--mono); color: var(--primary); font-size: .95rem; }
 .caret { display: inline-block; width: 9px; height: 1.05em; background: var(--primary); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
@@ -308,8 +348,11 @@ body::after {
 .badges li { padding: .4rem .85rem; border-radius: 99px; font-size: .82rem; border: 1px solid var(--border); background: var(--surface); animation: float 5s ease-in-out infinite; }
 .badges li:nth-child(2) { animation-delay: .6s; } .badges li:nth-child(3) { animation-delay: 1.2s; } .badges li:nth-child(4) { animation-delay: 1.8s; }
 @keyframes float { 50% { transform: translateY(-6px); } }
- 
-.profile-card { padding: 1.4rem; box-shadow: var(--glow); position: relative; }
+
+/* profile card now lives in its own section right after the hero */
+.profile-section { padding: 2.5rem 0 4rem; }
+.profile-section .container { display: flex; justify-content: center; }
+.profile-card { padding: 1.4rem; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .65), var(--glow); position: relative; width: min(420px, 100%); }
 .profile-card::before {
   content: ""; position: absolute; top: -34px; right: -34px; width: 140px; height: 140px;
   background: var(--grad); filter: blur(46px); opacity: .35; z-index: -1; border-radius: 50%;
@@ -353,9 +396,19 @@ body::after {
 .floaters i:nth-child(3) { width: 130px; height: 130px; bottom: 6%; right: 22%; border-radius: 40px; animation-delay: 2s; }
 .floaters i:nth-child(4) { width: 26px; height: 26px; top: 24%; left: 12%; animation-delay: 3s; }
 .floaters i:nth-child(5) { width: 60px; height: 60px; top: 60%; right: 45%; border-radius: 50%; animation-delay: 1.6s; }
+.floaters i:nth-child(6) { width: 18px; height: 18px; top: 40%; left: 22%; border-radius: 50%; animation-delay: 2.6s; }
+.floaters i:nth-child(7) { width: 70px; height: 70px; top: 8%; left: 32%; border-radius: 30px; animation-delay: 4s; }
+.floaters i:nth-child(8) { width: 34px; height: 34px; bottom: 30%; right: 8%; border-radius: 50%; animation-delay: .5s; }
+.floaters i:nth-child(9) { width: 100px; height: 100px; bottom: 40%; left: 46%; border-radius: 50%; animation-delay: 3.4s; }
  
-.scroll-indicator { position: absolute; left: 50%; bottom: 1.2rem; translate: -50% 0; width: 24px; height: 40px; border: 1px solid var(--border); border-radius: 99px; display: grid; place-items: start center; padding-top: 7px; }
-.scroll-indicator span { width: 4px; height: 8px; border-radius: 4px; background: var(--primary); animation: scrolly 1.8s infinite; }
+.scroll-indicator {
+  position: absolute; left: 50%; bottom: 1.6rem; translate: -50% 0; z-index: 7;
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+  text-decoration: none; color: var(--fg);
+}
+.scroll-indicator-label { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
+.scroll-indicator-pill { width: 28px; height: 44px; border: 1px solid var(--border); background: color-mix(in oklab, var(--bg) 35%, transparent); border-radius: 99px; display: grid; place-items: start center; padding-top: 8px; }
+.scroll-indicator-pill span { width: 4px; height: 9px; border-radius: 4px; background: var(--primary); animation: scrolly 1.8s infinite; }
 @keyframes scrolly { 60% { transform: translateY(14px); opacity: 0; } }
  
 /* ---------- about ---------- */
@@ -404,6 +457,27 @@ body::after {
 .project-links { display: flex; gap: .6rem; margin-top: auto; }
 .project-links a { font-size: .85rem; padding: .5rem .9rem; border-radius: 99px; border: 1px solid var(--border); transition: .2s; }
 .project-links a:hover { background: var(--surface-strong); }
+
+/* ---------- catalogue crate (throw-aside project deck) ---------- */
+.project-grid.crate {
+  position: relative; display: block;
+  width: min(420px, 100%); height: min(660px, 78vh);
+  margin: 0 auto; touch-action: none;
+}
+.crate .project {
+  position: absolute; inset: 0;
+  transition: transform .55s cubic-bezier(.2, .8, .2, 1), opacity .5s ease;
+  cursor: grab;
+}
+.crate .project:hover { transform: none; box-shadow: var(--shadow); }
+.crate .project.is-dragging { transition: none; cursor: grabbing; }
+.crate .project.is-thrown { transition: transform .55s cubic-bezier(.4, 0, 1, 1), opacity .5s ease .1s; }
+.crate .project figure { aspect-ratio: auto; height: 150px; }
+.crate .project-body { overflow-y: auto; }
+.crate .project.hide { display: none; }
+
+.crate-controls { display: flex; flex-direction: column; align-items: center; gap: .8rem; margin-top: 2rem; }
+.crate-progress { font-size: .8rem; }
  
 /* ---------- experience / stats ---------- */
 .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4rem; align-items: center; }
@@ -550,9 +624,10 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   display: flex; align-items: center; gap: .65rem;
   padding: .6rem 1rem; border-radius: 99px;
   font-family: var(--mono);
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
 }
 .live-clock:hover { transform: translateY(-2px); box-shadow: var(--glow); }
+.live-clock.is-hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
 .live-clock-dot {
   width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex: none;
   box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 60%, transparent);
@@ -581,7 +656,7 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
 
 /* ---------- responsive ---------- */
 @media (max-width: 980px) {
-  .hero-grid, .about-grid, .exp-grid, .contact-grid, .dash { grid-template-columns: 1fr; }
+  .about-grid, .exp-grid, .contact-grid, .dash { grid-template-columns: 1fr; }
   .footer-main { grid-template-columns: 1fr; gap: 1.8rem; }
   .dash-side { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   /* On narrow screens the ambient glow blobs sit closer to content and read
