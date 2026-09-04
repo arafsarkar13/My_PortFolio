@@ -67,7 +67,7 @@ p { margin: 0 0 1rem; }
 .mono { font-family: var(--mono); font-size: .82rem; }
 .muted { color: var(--muted); }
 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.container { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; }
+.container { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; min-width: 0; }
  
 /* subtle grain texture — adds depth without being visible as a "pattern" */
 body::after {
@@ -679,6 +679,23 @@ input:focus, textarea:focus { border-color: var(--primary); outline: none; box-s
   .hud-corner { width: 16px; height: 16px; }
   .footer-top { justify-content: center; }
   .footer-bottom { justify-content: center; text-align: center; }
+}
+
+@media (max-width: 640px) {
+  /* On phones, the heading + lead paragraph + two rows of CTA buttons +
+     two rows of badges routinely add up to more vertical space than a
+     phone screen has above the fold — .hero is a fixed 100svh, so that
+     stack runs straight into .scroll-indicator, which stays pinned to
+     the bottom no matter how tall the content above it gets. Rather than
+     let them collide, drop the indicator on small screens (it's a nice-
+     to-have nudge, not something mobile visitors need — they already
+     know to scroll) and tighten the stack's own spacing so there's more
+     headroom before it would ever reach that indicator.  */
+  .scroll-indicator { display: none; }
+  .hero-copy .lead { margin-bottom: .6rem; }
+  .cta-row { margin: 1.2rem 0 1rem; gap: .55rem; }
+  .badges { gap: .4rem; }
+  .badges li { padding: .32rem .7rem; font-size: .78rem; }
 }
  
 /* =========================================================
