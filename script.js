@@ -212,6 +212,16 @@
     ).observe(footerEl);
   }
 
+  // Mobile browsers may keep :hover/:focus on a tapped link. Blur button links
+  // after touch/pointer activation so they return to their normal appearance.
+  // Keyboard focus is preserved because this only runs for touch/coarse pointers.
+  document.addEventListener("pointerup", (e) => {
+    if (e.pointerType === "touch" || e.pointerType === "pen") {
+      const target = e.target.closest("a.btn, button.btn");
+      if (target) setTimeout(() => target.blur(), 0);
+    }
+  }, { passive: true });
+
   const onScroll = () => {
     const y = window.scrollY;
     navPill.classList.toggle("scrolled", y > 20);
