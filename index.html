@@ -1,453 +1,879 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#10182a" id="metaThemeColor" />
-<title>Md Araf Islam Sarkar — CSE Student & Web Developer</title>
-<meta name="description" content="Portfolio of Md Araf Islam Sarkar — Computer Science & Engineering student, web developer and future software engineer building responsive, scalable web experiences." />
-<meta name="author" content="Md Araf Islam Sarkar" />
-<link rel="canonical" href="https://arafsarkar.dev/" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Md Araf Islam Sarkar — CSE Student & Web Developer" />
-<meta property="og:description" content="Building digital experiences through code and creativity." />
-<meta name="twitter:card" content="summary_large_image" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Md Araf Islam Sarkar","jobTitle":"CSE Student | Web Developer","email":"mailto:arafsarkar13@gmail.com","knowsAbout":["Web Development","JavaScript","Node.js","MongoDB","Data Structures"]}
-</script>
-</head>
-<body>
-
-<!-- Loading screen -->
-<div id="loader" class="loader" aria-hidden="true">
-  <div class="loader-phase loader-phase-boot active" id="loaderBoot">
-    <div class="loader-flyby" aria-hidden="true">
-      <span class="loader-trail-dot"></span>
-      <span class="loader-trail-dot"></span>
-      <span class="loader-trail-dot"></span>
-      <span class="loader-rocket">🚀</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10182a" id="metaThemeColor" />
+    <title>Md. Araf Islam Sarkar | CSE Student & Web Developer</title>
+    <meta
+      name="description"
+      content="Portfolio of Md Araf Islam Sarkar — Computer Science & Engineering student, web developer and future software engineer building responsive, scalable web experiences."
+    />
+    <meta name="author" content="Md Araf Islam Sarkar" />
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icons/icon-32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/icons/icon-16.png"
+    />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/icons/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="canonical" href="https://arafsarkar.dev/" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Md Araf Islam Sarkar — CSE Student & Web Developer"
+    />
+    <meta
+      property="og:description"
+      content="Building digital experiences through code and creativity."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Md Araf Islam Sarkar",
+        "jobTitle": "CSE Student | Web Developer",
+        "email": "mailto:arafsarkar13@gmail.com",
+        "knowsAbout": [
+          "Web Development",
+          "JavaScript",
+          "Node.js",
+          "MongoDB",
+          "Data Structures"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Loading screen -->
+    <div id="loader" class="loader" aria-hidden="true">
+      <div class="loader-phase loader-phase-boot active" id="loaderBoot">
+        <div class="loader-flyby" aria-hidden="true">
+          <span class="loader-trail-dot"></span>
+          <span class="loader-trail-dot"></span>
+          <span class="loader-trail-dot"></span>
+          <span class="loader-rocket">🚀</span>
+        </div>
+        <div class="loader-mark">Araf<span class="grad">.dev</span></div>
+        <div class="loader-bar"><span></span></div>
+        <p class="loader-text" id="loaderText">Compiling experience…</p>
+        <p class="loader-pct" id="loaderPct">0%</p>
+      </div>
+      <div class="loader-phase loader-phase-access" id="loaderAccess">
+        <p class="loader-access-eyebrow">// Access Granted</p>
+        <h2 class="loader-access-title">
+          Welcome to <span class="grad">Araf's</span><br />Build Log
+        </h2>
+      </div>
     </div>
-    <div class="loader-mark">Araf<span class="grad">.dev</span></div>
-    <div class="loader-bar"><span></span></div>
-    <p class="loader-text" id="loaderText">Compiling experience…</p>
-    <p class="loader-pct" id="loaderPct">0%</p>
-  </div>
-  <div class="loader-phase loader-phase-access" id="loaderAccess">
-    <p class="loader-access-eyebrow">// Access Granted</p>
-    <h2 class="loader-access-title">Welcome to <span class="grad">Araf's</span><br />Build Log</h2>
-  </div>
-</div>
 
-<div class="cursor" id="cursor" aria-hidden="true"></div>
-<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
-<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-<div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
-
-<a class="skip-link" href="#main">Skip to content</a>
-
-<header class="nav" id="nav">
-  <div class="nav-pill" id="navPill">
-    <div class="nav-pill-bar">
-      <a class="nav-pill-brand" href="#hero">Araf</a>
-      <button id="menuToggle" class="nav-pill-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
-        <span class="nav-pill-toggle-icon" aria-hidden="true">
-          <span class="dots"><i></i><i></i><i></i></span>
-          <span class="close">✕</span>
-        </span>
-      </button>
+    <div class="cursor" id="cursor" aria-hidden="true"></div>
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    <div class="aurora" aria-hidden="true">
+      <span></span><span></span><span></span>
     </div>
-    <nav class="nav-pill-menu" id="navLinks" aria-label="Primary">
-      <a href="#about">About Me</a>
-      <a href="#education">Education</a>
-      <a href="#skills">Skills</a>
-      <a href="#projects">Projects</a>
-      <a href="#experience">Experience</a>
-      <a href="#github">GitHub</a>
-      <a href="#hire">Why me</a>
-      <a href="#blog">Blog</a>
-      <a href="#contact">Contact</a>
-      <button type="button" id="themeToggle" class="nav-pill-theme" aria-label="Toggle color theme">
-        <span class="theme-icon">◐</span><span>Toggle theme</span>
-      </button>
-      <span class="nav-pill-clock mono" id="navClockTime" aria-hidden="true">--:--</span>
-    </nav>
-  </div>
-</header>
 
-<main id="main">
+    <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- HERO INTRO — the wrapper is taller than the viewport on purpose: the
+    <header class="nav" id="nav">
+      <div class="nav-pill" id="navPill">
+        <div class="nav-pill-bar">
+          <a class="nav-pill-brand" href="#hero">Araf</a>
+          <button
+            id="menuToggle"
+            class="nav-pill-toggle"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+            aria-controls="navLinks"
+          >
+            <span class="nav-pill-toggle-icon" aria-hidden="true">
+              <span class="dots"><i></i><i></i><i></i></span>
+              <span class="close">✕</span>
+            </span>
+          </button>
+        </div>
+        <nav class="nav-pill-menu" id="navLinks" aria-label="Primary">
+          <a href="#about">About Me</a>
+          <a href="#education">Education</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Projects</a>
+          <a href="#experience">Experience</a>
+          <a href="#github">GitHub</a>
+          <a href="#hire">Why me</a>
+          <a href="#blog">Blog</a>
+          <a href="#contact">Contact</a>
+          <button
+            type="button"
+            id="themeToggle"
+            class="nav-pill-theme"
+            aria-label="Toggle color theme"
+          >
+            <span class="theme-icon">◐</span><span>Toggle theme</span>
+          </button>
+          <span class="nav-pill-clock mono" id="navClockTime" aria-hidden="true"
+            >--:--</span
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- HERO INTRO — the wrapper is taller than the viewport on purpose: the
      hero inside it is sticky/pinned, so scrolling through this extra
      height is what drives the portal opening (see updatePortalScroll in
      script.js), instead of it happening automatically on a timer. -->
-<div class="hero-intro" id="heroIntro">
-<section id="hero" class="hero">
-  <div class="portal-image" aria-hidden="true"><img class="portal-photo" src="assets/profile-6.jpg" alt="" loading="eager" width="4080" height="3060" /></div>
-  <div class="floaters" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="hero-portal" id="heroPortal" aria-hidden="true">
-    <div class="portal-panel portal-panel-left"></div>
-    <div class="portal-panel portal-panel-right"></div>
-    <p class="wordmark"><span class="wordmark-half wordmark-left">Ar</span><span class="wordmark-half wordmark-right">af</span></p>
-  </div>
-  <div class="container">
-    <div class="hero-single">
-    <div class="hero-copy reveal">
-      <p class="eyebrow">CSE Student · Web Developer · Future Software Engineer</p>
-      <h1>Building Digital Experiences Through <span class="grad">Code and Creativity</span></h1>
-      <p class="type-line"><span class="mono">&gt;</span> <span id="typewriter"></span><span class="caret"></span></p>
-      <p class="lead">I am a Computer Science &amp; Engineering student and passionate web developer focused on building responsive, user-friendly, and scalable digital solutions. I continuously learn, experiment, and transform ideas into real-world applications.</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#projects">View Projects</a>
-        <a class="btn btn-ghost" href="resume.html" download="Md-Araf-Islam-Sarkar-Resume.html">Download Resume</a>
-        <a class="btn btn-ghost" href="#contact">Contact Me</a>
+      <div class="hero-intro" id="heroIntro">
+        <section id="hero" class="hero">
+          <div class="portal-image" aria-hidden="true">
+            <img
+              class="portal-photo"
+              src="assets/profile-6.jpg"
+              alt=""
+              loading="eager"
+              width="4080"
+              height="3060"
+            />
+          </div>
+          <div class="floaters" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="hero-portal" id="heroPortal" aria-hidden="true">
+            <div class="portal-panel portal-panel-left"></div>
+            <div class="portal-panel portal-panel-right"></div>
+            <p class="wordmark">
+              <span class="wordmark-half wordmark-left">Ar</span
+              ><span class="wordmark-half wordmark-right">af</span>
+            </p>
+          </div>
+          <div class="container">
+            <div class="hero-single">
+              <div class="hero-copy reveal">
+                <p class="eyebrow">
+                  CSE Student · Web Developer · Future Software Engineer
+                </p>
+                <h1>
+                  Building Digital Experiences Through
+                  <span class="grad">Code and Creativity</span>
+                </h1>
+                <p class="type-line">
+                  <span class="mono">&gt;</span> <span id="typewriter"></span
+                  ><span class="caret"></span>
+                </p>
+                <p class="lead">
+                  I am a Computer Science &amp; Engineering student and
+                  passionate web developer focused on building responsive,
+                  user-friendly, and scalable digital solutions. I continuously
+                  learn, experiment, and transform ideas into real-world
+                  applications.
+                </p>
+                <div class="cta-row">
+                  <a class="btn btn-primary" href="#projects">View Projects</a>
+                  <a
+                    class="btn btn-ghost"
+                    href="resume.html"
+                    download="Md-Araf-Islam-Sarkar-Resume.html"
+                    >Download Resume</a
+                  >
+                  <a class="btn btn-ghost" href="#contact">Contact Me</a>
+                </div>
+                <ul class="badges">
+                  <li>CSE Student</li>
+                  <li>Web Developer</li>
+                  <li>Problem Solver</li>
+                  <li>Lifelong Learner</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <a class="scroll-indicator" href="#about" aria-label="Scroll to open">
+            <span class="scroll-indicator-label">Scroll to open</span>
+            <span class="scroll-indicator-pill"><span></span></span>
+          </a>
+        </section>
       </div>
-      <ul class="badges">
-        <li>CSE Student</li><li>Web Developer</li><li>Problem Solver</li><li>Lifelong Learner</li>
-      </ul>
-    </div>
-    </div>
-  </div>
-  <a class="scroll-indicator" href="#about" aria-label="Scroll to open">
-    <span class="scroll-indicator-label">Scroll to open</span>
-    <span class="scroll-indicator-pill"><span></span></span>
-  </a>
-</section>
-</div>
 
-<!-- PROFILE -->
-<section id="profile" class="section profile-section">
-  <div class="container">
-    <aside class="glass profile-card reveal">
-      <div class="profile-top">
-        <img src="assets/profile.jpg" width="768" height="768" alt="Portrait of Md Araf Islam Sarkar" />
-        <div>
-          <h2>Md Araf Islam Sarkar</h2>
-          <p class="muted">Age 23 · Bangladesh</p>
-          <p class="status"><span class="dot"></span> Open to internships</p>
-        </div>
-      </div>
-      <dl class="profile-stats">
-        <div><dt>Teaching</dt><dd>3+ yrs</dd></div>
-        <div><dt>Projects</dt><dd>4+</dd></div>
-        <div><dt>Focus</dt><dd>Full Stack</dd></div>
-      </dl>
-      <pre class="code-chip mono">const araf = {
+      <!-- PROFILE -->
+      <section id="profile" class="section profile-section">
+        <div class="container">
+          <aside class="glass profile-card reveal">
+            <div class="profile-top">
+              <img
+                src="assets/profile.jpg"
+                width="768"
+                height="768"
+                alt="Portrait of Md Araf Islam Sarkar"
+              />
+              <div>
+                <h2>Md Araf Islam Sarkar</h2>
+                <p class="muted">Age 23 · Bangladesh</p>
+                <p class="status">
+                  <span class="dot"></span> Open to internships
+                </p>
+              </div>
+            </div>
+            <dl class="profile-stats">
+              <div>
+                <dt>Teaching</dt>
+                <dd>3+ yrs</dd>
+              </div>
+              <div>
+                <dt>Projects</dt>
+                <dd>4+</dd>
+              </div>
+              <div>
+                <dt>Focus</dt>
+                <dd>Full Stack</dd>
+              </div>
+            </dl>
+            <pre class="code-chip mono">
+const araf = {
   role: "Web Developer",
   learning: ["React", "Cloud"],
   ships: true
-};</pre>
-    </aside>
-  </div>
-</section>
+};</pre
+            >
+          </aside>
+        </div>
+      </section>
 
-<!-- ABOUT -->
-<section id="about" class="section">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">01 — About</p>
-      <h2>Engineering mindset, built one problem at a time</h2>
-    </header>
-    <div class="about-grid">
-      <div class="reveal">
-        <p>I believe technology creates the greatest impact when it solves real-world problems. My journey in Computer Science and Web Development is driven by curiosity, creativity, and a constant desire to improve. Every project I build becomes an opportunity to learn new technologies, strengthen problem-solving skills, and create meaningful digital experiences.</p>
-        <p>As a dedicated learner, I continuously explore modern development practices, software engineering principles, and emerging technologies. My long-term goal is to become a skilled Software Engineer capable of building scalable products that positively impact people and businesses.</p>
-        <div class="chips">
-          <span>Clean code</span><span>Accessibility</span><span>Performance</span><span>System thinking</span>
+      <!-- ABOUT -->
+      <section id="about" class="section">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">01 — About</p>
+            <h2>Engineering mindset, built one problem at a time</h2>
+          </header>
+          <div class="about-grid">
+            <div class="reveal">
+              <p>
+                I believe technology creates the greatest impact when it solves
+                real-world problems. My journey in Computer Science and Web
+                Development is driven by curiosity, creativity, and a constant
+                desire to improve. Every project I build becomes an opportunity
+                to learn new technologies, strengthen problem-solving skills,
+                and create meaningful digital experiences.
+              </p>
+              <p>
+                As a dedicated learner, I continuously explore modern
+                development practices, software engineering principles, and
+                emerging technologies. My long-term goal is to become a skilled
+                Software Engineer capable of building scalable products that
+                positively impact people and businesses.
+              </p>
+              <div class="chips">
+                <span>Clean code</span><span>Accessibility</span
+                ><span>Performance</span><span>System thinking</span>
+              </div>
+            </div>
+            <div class="cards-2">
+              <article class="glass card reveal">
+                <h3>Curiosity</h3>
+                <p>
+                  Learning by building — every unknown becomes the next project.
+                </p>
+              </article>
+              <article class="glass card reveal">
+                <h3>Discipline</h3>
+                <p>
+                  Consistent daily practice in DSA, JavaScript and product
+                  craft.
+                </p>
+              </article>
+              <article class="glass card reveal">
+                <h3>Clarity</h3>
+                <p>
+                  3+ years of teaching taught me to explain hard things simply.
+                </p>
+              </article>
+              <article class="glass card reveal">
+                <h3>Ownership</h3>
+                <p>
+                  From idea to deployment, I stay accountable for the outcome.
+                </p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EDUCATION -->
+      <section id="education" class="section alt">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">02 — Education</p>
+            <h2>Academic journey</h2>
+          </header>
+          <ol class="timeline">
+            <li class="reveal">
+              <div class="glass card">
+                <h3>B.Sc. in Computer Science &amp; Engineering</h3>
+                <p class="muted">Current academic pursuit</p>
+                <ul class="ticks">
+                  <li>Software engineering focus</li>
+                  <li>Web development specialization</li>
+                  <li>Problem-solving mindset</li>
+                </ul>
+              </div>
+            </li>
+            <li class="reveal">
+              <div class="glass card">
+                <h3>Areas of Interest</h3>
+                <div class="chips">
+                  <span>Software Engineering</span
+                  ><span>Full Stack Development</span
+                  ><span>Web Technologies</span><span>System Design</span
+                  ><span>Artificial Intelligence</span
+                  ><span>Database Systems</span>
+                </div>
+              </div>
+            </li>
+            <li class="reveal">
+              <div class="glass card">
+                <h3>Future Learning Goals</h3>
+                <div class="chips">
+                  <span>Advanced JavaScript</span><span>React Ecosystem</span
+                  ><span>Backend Engineering</span><span>Cloud Computing</span
+                  ><span>DevOps</span><span>System Architecture</span>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section id="skills" class="section">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">03 — Skills</p>
+            <h2>Technical toolkit</h2>
+            <div class="filters" id="skillFilters" role="tablist">
+              <button class="chip-btn is-active" data-filter="all">All</button>
+              <button class="chip-btn" data-filter="frontend">Frontend</button>
+              <button class="chip-btn" data-filter="backend">Backend</button>
+              <button class="chip-btn" data-filter="database">Databases</button>
+              <button class="chip-btn" data-filter="tools">Tools</button>
+              <button class="chip-btn" data-filter="cs">CS Fundamentals</button>
+            </div>
+          </header>
+          <div class="skill-grid" id="skillGrid"></div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="section alt">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">04 — Projects</p>
+            <h2>Featured work</h2>
+            <p class="muted">
+              Drag a card aside to see the next one, or use the button below.
+            </p>
+            <div class="filters" id="projectFilters">
+              <button class="chip-btn is-active" data-filter="all">All</button>
+              <button class="chip-btn" data-filter="frontend">Frontend</button>
+              <button class="chip-btn" data-filter="fullstack">
+                Full Stack
+              </button>
+              <button class="chip-btn" data-filter="upcoming">Upcoming</button>
+            </div>
+          </header>
+          <div class="project-grid crate reveal" id="projectGrid"></div>
+          <div class="crate-controls reveal">
+            <button type="button" class="btn btn-ghost" id="crateSkip">
+              Set this one aside →
+            </button>
+            <p class="crate-progress mono muted" id="crateProgress"></p>
+            <button type="button" class="btn btn-ghost" id="crateReset" hidden>
+              Reshuffle the deck
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPERIENCE -->
+      <section id="experience" class="section">
+        <div class="container exp-grid">
+          <header class="section-head reveal">
+            <p class="kicker">05 — Experience</p>
+            <h2>Private Tutor · 3+ years</h2>
+            <p class="lead">
+              Demonstrated strong communication, patience, leadership,
+              mentoring, and educational planning through years of teaching
+              experience.
+            </p>
+          </header>
+          <div class="glass card reveal">
+            <h3>Responsibilities</h3>
+            <ul class="ticks">
+              <li>Teaching students from Class 6–10</li>
+              <li>Developing customized learning plans</li>
+              <li>Strengthening analytical thinking</li>
+              <li>Improving student academic performance</li>
+              <li>Building problem-solving abilities</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="section stats-section">
+        <div class="container stat-grid" id="statGrid">
+          <div class="glass stat reveal">
+            <strong data-count="3" data-suffix="+">0</strong
+            ><span>Years teaching experience</span>
+          </div>
+          <div class="glass stat reveal">
+            <strong data-count="4" data-suffix="+">0</strong
+            ><span>Academic projects completed</span>
+          </div>
+          <div class="glass stat reveal">
+            <strong data-count="12" data-suffix="+">0</strong
+            ><span>Technologies practiced</span>
+          </div>
+          <div class="glass stat reveal">
+            <strong data-count="365" data-suffix="+">0</strong
+            ><span>Days of continuous learning</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- GITHUB DASHBOARD -->
+      <section id="github" class="section alt">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">06 — Developer dashboard</p>
+            <h2>GitHub activity</h2>
+            <p class="muted" id="dashCaption">
+              Illustrative snapshot — connect a GitHub username in
+              <code class="mono">script.js</code> to render live data.
+            </p>
+            <a
+              class="btn btn-ghost dash-profile-link"
+              href="https://github.com/arafsarkar13"
+              target="_blank"
+              rel="noopener"
+              >View full profile on GitHub ↗</a
+            >
+          </header>
+          <div class="dash">
+            <div class="glass card reveal dash-graph">
+              <div class="dash-head">
+                <h3>Contribution graph</h3>
+                <span class="muted mono" id="contribTotal">—</span>
+              </div>
+              <div
+                class="heatmap"
+                id="heatmap"
+                aria-label="Contribution heatmap"
+              ></div>
+              <div class="heat-legend">
+                <span>Less</span><i class="l0"></i><i class="l1"></i
+                ><i class="l2"></i><i class="l3"></i><i class="l4"></i
+                ><span>More</span>
+              </div>
+            </div>
+            <div class="dash-side">
+              <div class="glass card reveal">
+                <p class="muted">Repositories</p>
+                <strong class="big" id="repoCount" data-count="18">0</strong>
+              </div>
+              <div class="glass card reveal">
+                <p class="muted">Commits this year</p>
+                <strong
+                  class="big"
+                  id="commitCount"
+                  data-count="640"
+                  data-suffix="+"
+                  >0</strong
+                >
+              </div>
+              <div class="glass card reveal">
+                <p class="muted">Current streak</p>
+                <strong
+                  class="big"
+                  id="streakCount"
+                  data-count="26"
+                  data-suffix=" days"
+                  >0</strong
+                >
+              </div>
+            </div>
+            <div class="glass card reveal dash-langs">
+              <h3>Language statistics</h3>
+              <div id="langBars"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY HIRE ME -->
+      <section id="hire" class="section">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">07 — Why hire me</p>
+            <h2>Core strengths</h2>
+          </header>
+          <div class="grid-3" id="strengths"></div>
+        </div>
+      </section>
+
+      <!-- TESTIMONIALS -->
+      <section id="testimonials" class="section alt">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">08 — Testimonials</p>
+            <h2>What people say</h2>
+          </header>
+          <div class="carousel glass reveal">
+            <blockquote id="quote"></blockquote>
+            <div class="carousel-foot">
+              <div>
+                <p class="who" id="who"></p>
+                <p class="muted" id="role"></p>
+              </div>
+              <div class="carousel-ctrl">
+                <button
+                  class="icon-btn"
+                  id="prevQ"
+                  aria-label="Previous testimonial"
+                >
+                  ←
+                </button>
+                <div class="dots" id="dots"></div>
+                <button
+                  class="icon-btn"
+                  id="nextQ"
+                  aria-label="Next testimonial"
+                >
+                  →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLOG -->
+      <section id="blog" class="section">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">09 — Writing</p>
+            <h2>Blog &amp; learning journey</h2>
+          </header>
+          <div class="grid-3" id="blogGrid"></div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="section alt">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="kicker">10 — Contact</p>
+            <h2 class="hud-title">
+              Transmit a <span class="grad">Message</span>
+            </h2>
+            <p class="lead">
+              Open to internships, junior developer roles and freelance work.
+            </p>
+          </header>
+          <div class="contact-grid">
+            <div class="reveal">
+              <ul class="contact-list">
+                <li>
+                  <span class="mono">Email</span
+                  ><a href="mailto:arafsarkar13@gmail.com"
+                    >arafsarkar13@gmail.com</a
+                  >
+                </li>
+                <li>
+                  <span class="mono">GitHub</span
+                  ><a
+                    href="https://github.com/arafsarkar13"
+                    target="_blank"
+                    rel="noopener"
+                    >arafsarkar13</a
+                  >
+                </li>
+                <li>
+                  <span class="mono">LinkedIn</span
+                  ><a
+                    href="https://www.linkedin.com/in/arafsarkar13/"
+                    target="_blank"
+                    rel="noopener"
+                    >arafsarkar13</a
+                  >
+                </li>
+                <li>
+                  <span class="mono">Whatsapp</span
+                  ><a
+                    href="https://wa.me/+8801518972367"
+                    target="_blank"
+                    rel="noopener"
+                    >arafsarkar13</a
+                  >
+                </li>
+                <li>
+                  <span class="mono">Telegram</span
+                  ><a href="https://t.me/akaimma" target="_blank" rel="noopener"
+                    >@akaimma</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="hud-frame reveal">
+              <span class="hud-corner hud-corner-tl" aria-hidden="true"></span>
+              <span class="hud-corner hud-corner-tr" aria-hidden="true"></span>
+              <span class="hud-corner hud-corner-bl" aria-hidden="true"></span>
+              <span class="hud-corner hud-corner-br" aria-hidden="true"></span>
+              <form class="glass card hud-form" id="contactForm" novalidate>
+                <div class="field">
+                  <label for="name">Identity / Name</label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    required
+                  />
+                  <p class="error" data-for="name"></p>
+                </div>
+                <div class="field">
+                  <label for="email">Secure routing / Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                  />
+                  <p class="error" data-for="email"></p>
+                </div>
+                <div class="field">
+                  <label for="subject">Transmission subject</label>
+                  <input id="subject" name="subject" type="text" required />
+                  <p class="error" data-for="subject"></p>
+                </div>
+                <div class="field">
+                  <label for="message">Payload / Message</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows="5"
+                    required
+                  ></textarea>
+                  <p class="error" data-for="message"></p>
+                </div>
+                <!-- Honeypot: real users never see/fill this; bots that auto-fill every field do -->
+                <div class="field hp-field" aria-hidden="true">
+                  <label for="company">Company</label>
+                  <input
+                    id="company"
+                    name="company"
+                    type="text"
+                    tabindex="-1"
+                    autocomplete="off"
+                  />
+                </div>
+                <button
+                  class="btn btn-primary"
+                  type="submit"
+                  id="contactSubmit"
+                >
+                  <span class="btn-label">Initialize Transmission ➤</span>
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
+                <p class="form-note muted">
+                  Sends directly to me — no mail client, no redirect.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="site-footer">
+      <div class="container footer-top">
+        <div class="footer-social" aria-label="Social links">
+          <a
+            href="https://github.com/arafsarkar13"
+            target="_blank"
+            rel="noopener"
+            aria-label="GitHub"
+            ><svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.43-2.7 5.4-5.27 5.69.42.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.53 10.53 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"
+              /></svg
+          ></a>
+          <a
+            href="https://www.linkedin.com/in/arafsarkar13/"
+            target="_blank"
+            rel="noopener"
+            aria-label="LinkedIn"
+            ><svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"
+              /></svg
+          ></a>
+          <a href="mailto:arafsarkar13@gmail.com" aria-label="Email"
+            ><svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              aria-hidden="true"
+            >
+              <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
+              <path
+                d="m3 6 9 7 9-7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              /></svg
+          ></a>
+          <a
+            href="https://www.facebook.com/konolinknaai"
+            target="_blank"
+            rel="noopener"
+            aria-label="Facebook"
+            ><svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M13.5 21.5v-8.2h2.75l.41-3.2h-3.16V8.02c0-.93.26-1.56 1.59-1.56h1.7V3.6c-.29-.04-1.3-.13-2.47-.13-2.45 0-4.12 1.49-4.12 4.23v2.4H7.44v3.2h2.76v8.2h3.3Z"
+              /></svg
+          ></a>
+          <a
+            href="https://www.instagram.com/arafsarkar13"
+            target="_blank"
+            rel="noopener"
+            aria-label="Instagram"
+            ><svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4.2" />
+              <circle
+                cx="17.3"
+                cy="6.7"
+                r="1.1"
+                fill="currentColor"
+                stroke="none"
+              /></svg
+          ></a>
+          <a
+            href="https://wa.me/+8801518972367"
+            target="_blank"
+            rel="noopener"
+            aria-label="WhatsApp"
+            ><svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M12.02 2.5c-5.26 0-9.52 4.26-9.52 9.52 0 1.68.44 3.29 1.27 4.72L2.5 21.5l4.9-1.24a9.47 9.47 0 0 0 4.62 1.18h.01c5.26 0 9.52-4.26 9.52-9.52s-4.27-9.42-9.53-9.42Zm5.6 13.42c-.24.66-1.38 1.27-1.9 1.34-.49.07-1.1.1-1.78-.11a16.3 16.3 0 0 1-1.63-.6c-2.87-1.24-4.74-4.13-4.89-4.32-.14-.2-1.17-1.56-1.17-2.98s.74-2.11 1-2.4c.26-.28.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 1.99.88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.45.12.61-.07.17-.19.71-.82.9-1.11.19-.28.38-.23.63-.14.26.09 1.65.78 1.94.92.28.14.47.21.54.33.07.13.07.71-.17 1.37Z"
+              /></svg
+          ></a>
         </div>
       </div>
-      <div class="cards-2">
-        <article class="glass card reveal"><h3>Curiosity</h3><p>Learning by building — every unknown becomes the next project.</p></article>
-        <article class="glass card reveal"><h3>Discipline</h3><p>Consistent daily practice in DSA, JavaScript and product craft.</p></article>
-        <article class="glass card reveal"><h3>Clarity</h3><p>3+ years of teaching taught me to explain hard things simply.</p></article>
-        <article class="glass card reveal"><h3>Ownership</h3><p>From idea to deployment, I stay accountable for the outcome.</p></article>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- EDUCATION -->
-<section id="education" class="section alt">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">02 — Education</p>
-      <h2>Academic journey</h2>
-    </header>
-    <ol class="timeline">
-      <li class="reveal"><div class="glass card">
-        <h3>B.Sc. in Computer Science &amp; Engineering</h3>
-        <p class="muted">Current academic pursuit</p>
-        <ul class="ticks"><li>Software engineering focus</li><li>Web development specialization</li><li>Problem-solving mindset</li></ul>
-      </div></li>
-      <li class="reveal"><div class="glass card">
-        <h3>Areas of Interest</h3>
-        <div class="chips"><span>Software Engineering</span><span>Full Stack Development</span><span>Web Technologies</span><span>System Design</span><span>Artificial Intelligence</span><span>Database Systems</span></div>
-      </div></li>
-      <li class="reveal"><div class="glass card">
-        <h3>Future Learning Goals</h3>
-        <div class="chips"><span>Advanced JavaScript</span><span>React Ecosystem</span><span>Backend Engineering</span><span>Cloud Computing</span><span>DevOps</span><span>System Architecture</span></div>
-      </div></li>
-    </ol>
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills" class="section">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">03 — Skills</p>
-      <h2>Technical toolkit</h2>
-      <div class="filters" id="skillFilters" role="tablist">
-        <button class="chip-btn is-active" data-filter="all">All</button>
-        <button class="chip-btn" data-filter="frontend">Frontend</button>
-        <button class="chip-btn" data-filter="backend">Backend</button>
-        <button class="chip-btn" data-filter="database">Databases</button>
-        <button class="chip-btn" data-filter="tools">Tools</button>
-        <button class="chip-btn" data-filter="cs">CS Fundamentals</button>
-      </div>
-    </header>
-    <div class="skill-grid" id="skillGrid"></div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects" class="section alt">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">04 — Projects</p>
-      <h2>Featured work</h2>
-      <p class="muted">Drag a card aside to see the next one, or use the button below.</p>
-      <div class="filters" id="projectFilters">
-        <button class="chip-btn is-active" data-filter="all">All</button>
-        <button class="chip-btn" data-filter="frontend">Frontend</button>
-        <button class="chip-btn" data-filter="fullstack">Full Stack</button>
-        <button class="chip-btn" data-filter="upcoming">Upcoming</button>
-      </div>
-    </header>
-    <div class="project-grid crate reveal" id="projectGrid"></div>
-    <div class="crate-controls reveal">
-      <button type="button" class="btn btn-ghost" id="crateSkip">Set this one aside →</button>
-      <p class="crate-progress mono muted" id="crateProgress"></p>
-      <button type="button" class="btn btn-ghost" id="crateReset" hidden>Reshuffle the deck</button>
-    </div>
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience" class="section">
-  <div class="container exp-grid">
-    <header class="section-head reveal">
-      <p class="kicker">05 — Experience</p>
-      <h2>Private Tutor · 3+ years</h2>
-      <p class="lead">Demonstrated strong communication, patience, leadership, mentoring, and educational planning through years of teaching experience.</p>
-    </header>
-    <div class="glass card reveal">
-      <h3>Responsibilities</h3>
-      <ul class="ticks">
-        <li>Teaching students from Class 6–10</li>
-        <li>Developing customized learning plans</li>
-        <li>Strengthening analytical thinking</li>
-        <li>Improving student academic performance</li>
-        <li>Building problem-solving abilities</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<section class="section stats-section">
-  <div class="container stat-grid" id="statGrid">
-    <div class="glass stat reveal"><strong data-count="3" data-suffix="+">0</strong><span>Years teaching experience</span></div>
-    <div class="glass stat reveal"><strong data-count="4" data-suffix="+">0</strong><span>Academic projects completed</span></div>
-    <div class="glass stat reveal"><strong data-count="12" data-suffix="+">0</strong><span>Technologies practiced</span></div>
-    <div class="glass stat reveal"><strong data-count="365" data-suffix="+">0</strong><span>Days of continuous learning</span></div>
-  </div>
-</section>
-
-<!-- GITHUB DASHBOARD -->
-<section id="github" class="section alt">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">06 — Developer dashboard</p>
-      <h2>GitHub activity</h2>
-      <p class="muted" id="dashCaption">Illustrative snapshot — connect a GitHub username in <code class="mono">script.js</code> to render live data.</p>
-      <a class="btn btn-ghost dash-profile-link" href="https://github.com/arafsarkar13" target="_blank" rel="noopener">View full profile on GitHub ↗</a>
-    </header>
-    <div class="dash">
-      <div class="glass card reveal dash-graph">
-        <div class="dash-head"><h3>Contribution graph</h3><span class="muted mono" id="contribTotal">—</span></div>
-        <div class="heatmap" id="heatmap" aria-label="Contribution heatmap"></div>
-        <div class="heat-legend"><span>Less</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>More</span></div>
-      </div>
-      <div class="dash-side">
-        <div class="glass card reveal"><p class="muted">Repositories</p><strong class="big" id="repoCount" data-count="18">0</strong></div>
-        <div class="glass card reveal"><p class="muted">Commits this year</p><strong class="big" id="commitCount" data-count="640" data-suffix="+">0</strong></div>
-        <div class="glass card reveal"><p class="muted">Current streak</p><strong class="big" id="streakCount" data-count="26" data-suffix=" days">0</strong></div>
-      </div>
-      <div class="glass card reveal dash-langs">
-        <h3>Language statistics</h3>
-        <div id="langBars"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHY HIRE ME -->
-<section id="hire" class="section">
-  <div class="container">
-    <header class="section-head reveal"><p class="kicker">07 — Why hire me</p><h2>Core strengths</h2></header>
-    <div class="grid-3" id="strengths"></div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section id="testimonials" class="section alt">
-  <div class="container">
-    <header class="section-head reveal"><p class="kicker">08 — Testimonials</p><h2>What people say</h2></header>
-    <div class="carousel glass reveal">
-      <blockquote id="quote"></blockquote>
-      <div class="carousel-foot">
-        <div><p class="who" id="who"></p><p class="muted" id="role"></p></div>
-        <div class="carousel-ctrl">
-          <button class="icon-btn" id="prevQ" aria-label="Previous testimonial">←</button>
-          <div class="dots" id="dots"></div>
-          <button class="icon-btn" id="nextQ" aria-label="Next testimonial">→</button>
+      <div class="container footer-main">
+        <div class="footer-tagline">
+          <p class="eyebrow">Let's build something</p>
+          <h2>Great <span class="grad">Together.</span></h2>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">/Quick links</p>
+          <div class="footer-links-grid">
+            <a href="#hero">Home</a>
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#experience">Work</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">/Contact</p>
+          <a class="footer-email" href="mailto:arafsarkar13@gmail.com"
+            >arafsarkar13@gmail.com</a
+          >
         </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- BLOG -->
-<section id="blog" class="section">
-  <div class="container">
-    <header class="section-head reveal"><p class="kicker">09 — Writing</p><h2>Blog &amp; learning journey</h2></header>
-    <div class="grid-3" id="blogGrid"></div>
-  </div>
-</section>
+      <div class="footer-wordmark" aria-hidden="true">ARAF</div>
 
-<!-- CONTACT -->
-<section id="contact" class="section alt">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">10 — Contact</p>
-      <h2 class="hud-title">Transmit a <span class="grad">Message</span></h2>
-      <p class="lead">Open to internships, junior developer roles and freelance work.</p>
-    </header>
-    <div class="contact-grid">
-      <div class="reveal">
-        <ul class="contact-list">
-          <li><span class="mono">Email</span><a href="mailto:arafsarkar13@gmail.com">arafsarkar13@gmail.com</a></li>
-          <li><span class="mono">GitHub</span><a href="https://github.com/arafsarkar13" target="_blank" rel="noopener">arafsarkar13</a></li>
-          <li><span class="mono">LinkedIn</span><a href="https://www.linkedin.com/in/arafsarkar13/" target="_blank" rel="noopener">arafsarkar13</a></li>
-          <li><span class="mono">Whatsapp</span><a href="https://wa.me/+8801518972367" target="_blank" rel="noopener">arafsarkar13</a></li>
-          <li><span class="mono">Telegram</span><a href="https://t.me/akaimma" target="_blank" rel="noopener">@akaimma</a></li>
-        </ul>
+      <div class="container footer-bottom">
+        <p>
+          © <span id="year"></span> Md Araf Islam Sarkar. Built with HTML, CSS
+          &amp; JavaScript.
+        </p>
+        <span class="footer-tag">/Creating since 2023</span>
+        <a href="#hero">Back to top ↑</a>
       </div>
-      <div class="hud-frame reveal">
-        <span class="hud-corner hud-corner-tl" aria-hidden="true"></span>
-        <span class="hud-corner hud-corner-tr" aria-hidden="true"></span>
-        <span class="hud-corner hud-corner-bl" aria-hidden="true"></span>
-        <span class="hud-corner hud-corner-br" aria-hidden="true"></span>
-        <form class="glass card hud-form" id="contactForm" novalidate>
-          <div class="field">
-            <label for="name">Identity / Name</label>
-            <input id="name" name="name" type="text" autocomplete="name" required />
-            <p class="error" data-for="name"></p>
-          </div>
-          <div class="field">
-            <label for="email">Secure routing / Email</label>
-            <input id="email" name="email" type="email" autocomplete="email" required />
-            <p class="error" data-for="email"></p>
-          </div>
-          <div class="field">
-            <label for="subject">Transmission subject</label>
-            <input id="subject" name="subject" type="text" required />
-            <p class="error" data-for="subject"></p>
-          </div>
-          <div class="field">
-            <label for="message">Payload / Message</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-            <p class="error" data-for="message"></p>
-          </div>
-          <!-- Honeypot: real users never see/fill this; bots that auto-fill every field do -->
-          <div class="field hp-field" aria-hidden="true">
-            <label for="company">Company</label>
-            <input id="company" name="company" type="text" tabindex="-1" autocomplete="off" />
-          </div>
-          <button class="btn btn-primary" type="submit" id="contactSubmit">
-            <span class="btn-label">Initialize Transmission ➤</span>
-            <span class="btn-spinner" aria-hidden="true"></span>
-          </button>
-          <p class="form-note muted">Sends directly to me — no mail client, no redirect.</p>
-        </form>
+    </footer>
+
+    <button class="fab" id="fab" aria-label="Back to top">↑</button>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="live-clock glass" id="liveClock" aria-live="polite">
+      <span class="live-clock-dot"></span>
+      <div class="live-clock-text">
+        <strong id="clockTime">--:--:--</strong>
+        <span id="clockMeta" class="muted"></span>
       </div>
     </div>
-  </div>
-</section>
 
-</main>
-
-<footer class="footer" id="site-footer">
-
-  <div class="container footer-top">
-    <div class="footer-social" aria-label="Social links">
-      <a href="https://github.com/arafsarkar13" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.43-2.7 5.4-5.27 5.69.42.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.53 10.53 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg></a>
-      <a href="https://www.linkedin.com/in/arafsarkar13/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"/></svg></a>
-      <a href="mailto:arafsarkar13@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 6 9 7 9-7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <a href="https://www.facebook.com/konolinknaai" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M13.5 21.5v-8.2h2.75l.41-3.2h-3.16V8.02c0-.93.26-1.56 1.59-1.56h1.7V3.6c-.29-.04-1.3-.13-2.47-.13-2.45 0-4.12 1.49-4.12 4.23v2.4H7.44v3.2h2.76v8.2h3.3Z"/></svg></a>
-      <a href="https://www.instagram.com/arafsarkar13" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg></a>
-      <a href="https://wa.me/+8801518972367" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.02 2.5c-5.26 0-9.52 4.26-9.52 9.52 0 1.68.44 3.29 1.27 4.72L2.5 21.5l4.9-1.24a9.47 9.47 0 0 0 4.62 1.18h.01c5.26 0 9.52-4.26 9.52-9.52s-4.27-9.42-9.53-9.42Zm5.6 13.42c-.24.66-1.38 1.27-1.9 1.34-.49.07-1.1.1-1.78-.11a16.3 16.3 0 0 1-1.63-.6c-2.87-1.24-4.74-4.13-4.89-4.32-.14-.2-1.17-1.56-1.17-2.98s.74-2.11 1-2.4c.26-.28.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 1.99.88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.45.12.61-.07.17-.19.71-.82.9-1.11.19-.28.38-.23.63-.14.26.09 1.65.78 1.94.92.28.14.47.21.54.33.07.13.07.71-.17 1.37Z"/></svg></a>
-    
-    </div>
-  </div>
-
-  <div class="container footer-main">
-    <div class="footer-tagline">
-      <p class="eyebrow">Let's build something</p>
-      <h2>Great <span class="grad">Together.</span></h2>
-    </div>
-    <div class="footer-col">
-      <p class="footer-col-title">/Quick links</p>
-      <div class="footer-links-grid">
-        <a href="#hero">Home</a>
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#experience">Work</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <p class="footer-col-title">/Contact</p>
-      <a class="footer-email" href="mailto:arafsarkar13@gmail.com">arafsarkar13@gmail.com</a>
-    </div>
-  </div>
-
-  <div class="footer-wordmark" aria-hidden="true">ARAF</div>
-
-  <div class="container footer-bottom">
-    <p>© <span id="year"></span> Md Araf Islam Sarkar. Built with HTML, CSS &amp; JavaScript.</p>
-    <span class="footer-tag">/Creating since 2023</span>
-    <a href="#hero">Back to top ↑</a>
-  </div>
-</footer>
-
-<button class="fab" id="fab" aria-label="Back to top">↑</button>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<div class="live-clock glass" id="liveClock" aria-live="polite">
-  <span class="live-clock-dot"></span>
-  <div class="live-clock-text">
-    <strong id="clockTime">--:--:--</strong>
-    <span id="clockMeta" class="muted"></span>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="script.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
