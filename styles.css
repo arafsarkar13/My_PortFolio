@@ -2442,3 +2442,17 @@ textarea:focus {
 #eggMatrix.show {
   display: block;
 }
+
+.project-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: -0.3rem 0 0;
+}
+.project-soon {
+  font-size: 0.8rem;
+  align-self: center;
+}
+.project-links {
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+}

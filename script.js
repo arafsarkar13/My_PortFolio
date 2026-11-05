@@ -357,18 +357,69 @@
 
   const projects = [
     {
-      cat: "frontend",
-      img: "assets/project-portfolio.jpg",
-      title: "Personal Portfolio Website",
-      desc: "A fully responsive personal portfolio designed to showcase skills, projects, and professional growth while maintaining exceptional user experience and modern aesthetics.",
-      stack: ["HTML", "CSS", "JavaScript"],
-      features: [
-        "Responsive design",
-        "Dark/light mode",
-        "Interactive animations",
-        "SEO optimized",
+      cat: "fullstack",
+      img: "assets/booknook.jpg",
+      title: "BookNook — Online Library",
+      desc: "A small online library where readers add books, borrow them for seven days and return them when done. Includes search, category filters, private routes and a JWT-protected API.",
+      role: "Solo developer",
+      date: "", // TODO: add month and year, e.g. "Nov 2026"
+      stack: [
+        "Next.js",
+        "React Query",
+        "Tailwind CSS",
+        "DaisyUI",
+        "swiper.js",
+        "Framer Motion",
+        "react-hot-toast",
+        "BetterAuth",
+        "MongoDB",
+        "imgBB",
       ],
-      stats: ["10 sections", "100% responsive", "0 dependencies"],
+      features: [
+        "Glass-style design in navy and gold with smooth Framer Motion animations and a dark and light theme toggle.",
+        "Home page with a Swiper.js slider, the six newest books loaded from the database, a <P>'How Borrowing Works section'</P> and a <P>'Top Categories'</P> section.",
+        "Secure authentication with BetterAuth and the MongoDB adapter: email and password sign up with password rules, plus Google login.",
+        "Private routes that send visitors to Login and bring them back to the same page afterwards. Logged-in users stay signed in when they reload.",
+        "Add, edit and delete books. Cover images are uploaded to imgbb, and a confirmation pop-up protects every delete.",
+        "Borrow system with a seven day return date, live copy counts, a <p>'Not Available'</p> state and protection against borrowing the same book twice.",
+        "Search and category filters on the All Books page, and a profile page with live statistics.",
+        "JWT-protected API. The Express server verifies tokens issued by BetterAuth.",
+      ],
+      stats: ["Full stack", "71 commits", "Live on Vercel"],
+      links: {
+        repo: "https://github.com/arafsarkar13/booknook-client",
+        live: "https://booknookborrowbook.vercel.app/",
+        server: "https://github.com/arafsarkar13/booknook-server",
+      },
+    },
+    {
+      cat: "frontend",
+      img: "assets/bazardor.jpg",
+      title: "🛒 বাজার দর (BazarDor)",
+      desc: "BazarDor is a Bangla grocery price tracker. It shows today's prices for 33 everyday products, how much each price went up or down, and a market-by-market comparison.",
+      stack: [
+        "Next.js",
+        "Tailwind CSS",
+        "JavaScript",
+        "DaisyUI",
+        "BetterAuth",
+        "MongoDB Atlas",
+        "react-hot-toast",
+      ],
+      features: [
+        "Live price ticker: an endless scrolling strip of all products with price and ▲/▼ change.",
+        "Smart home page: top 6 price risers, top 6 fallers, and a full grid of all 33 products, with skeleton loaders.",
+        "Category pages with numeric sorting: sort by price (low to high or high to low) that works correctly with Bengali digits.",
+        "Protected product details: login-only page with min, max and average price plus a market-wise price table.",
+        "Authentication: email/password, Google and GitHub login, with toast notifications and protected-route redirects.",
+        "Profile and update name: a profile page and a form to update the user's name.",
+        "Fully responsive: works on mobile, tablet and desktop, with a custom 404 page.",
+      ],
+      stats: ["15 commits", "100% responsive", "0 dependencies"],
+      links: {
+        repo: "https://github.com/arafsarkar13/bazardor",
+        live: "https://bazardor-sandy.vercel.app/",
+      },
     },
     {
       cat: "fullstack",
@@ -383,6 +434,11 @@
         "Secure data handling",
       ],
       stats: ["REST API", "4 entities", "Auth ready"],
+      links: {
+        repo: "https://github.com/arafsarkar13/booknook-client",
+        live: "https://booknookborrowbook.vercel.app/",
+        server: "https://github.com/arafsarkar13/booknook-server",
+      },
     },
     {
       cat: "frontend",
@@ -397,6 +453,11 @@
         "Performance optimized",
       ],
       stats: ["Mobile first", "Fast LCP", "Conversion focused"],
+      links: {
+        repo: "https://github.com/arafsarkar13/booknook-client",
+        live: "https://booknookborrowbook.vercel.app/",
+        server: "https://github.com/arafsarkar13/booknook-server",
+      },
     },
     {
       cat: "upcoming",
@@ -411,7 +472,62 @@
         "CI/CD pipeline",
       ],
       stats: ["In progress", "2026", "Learning build"],
+      links: {
+        repo: "https://github.com/arafsarkar13/booknook-client",
+        live: "https://booknookborrowbook.vercel.app/",
+        server: "https://github.com/arafsarkar13/booknook-server",
+      },
     },
+
+    /* ------------------------------------------------------------------
+       EMPTY PROJECT TEMPLATES — copy one block, remove the comment markers,
+       fill it in. Leave out a link entirely if it does not exist yet.
+       "cat" must be: frontend | fullstack | upcoming
+    ------------------------------------------------------------------
+    
+    {
+      cat: "fullstack",
+      img: "assets/project-NAME.jpg", // 1024x640 screenshot
+      title: "Project title",
+      desc: "One or two sentences: what it does and who it is for.",
+      role: "Solo developer",
+      date: "Mon YYYY",
+      stack: ["Tech 1", "Tech 2", "Tech 3"],
+      features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
+      stats: ["Stat 1", "Stat 2", "Stat 3"],
+      links: {
+        repo: "https://github.com/arafsarkar13/REPO",
+        live: "https://LIVE-URL",
+        // server: "https://github.com/arafsarkar13/REPO-server",
+      },
+    },
+    
+    {
+      cat: "fullstack",
+      img: "assets/project-NAME.jpg",
+      title: "Project title",
+      desc: "",
+      role: "",
+      date: "",
+      stack: [],
+      features: [],
+      stats: [],
+      links: { repo: "", live: "" },
+    },
+
+    {
+      cat: "frontend",
+      img: "assets/project-NAME.jpg",
+      title: "Project title",
+      desc: "",
+      role: "",
+      date: "",
+      stack: [],
+      features: [],
+      stats: [],
+      links: { repo: "", live: "" },
+    },
+    */
   ];
 
   $("#projectGrid").innerHTML = projects
@@ -422,14 +538,16 @@
       <div class="project-body">
         <span class="project-index mono">Project 0${i + 1}</span>
         <h3>${p.title}</h3>
+        ${p.role || p.date ? `<p class="project-meta mono">${[p.role, p.date].filter(Boolean).join(" · ")}</p>` : ""}
         <p class="muted">${p.desc}</p>
         <div class="stack">${p.stack.map((t) => `<span>${t}</span>`).join("")}</div>
+        <div class="project-links">
+          ${p.links?.repo ? `<a href="${p.links.repo}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ""}
+          ${p.links?.server ? `<a href="${p.links.server}" target="_blank" rel="noopener noreferrer">Server repo</a>` : ""}
+          ${p.links?.live ? `<a href="${p.links.live}" target="_blank" rel="noopener noreferrer">Live demo</a>` : `<span class="muted project-soon">Links coming soon</span>`}
+        </div>
         <ul class="ticks">${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>
         <div class="project-stats">${p.stats.map((s) => `<span>${s}</span>`).join("")}</div>
-        <div class="project-links">
-          <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-          <a href="#" target="_self">Live demo</a>
-        </div>
       </div>
     </article>`,
     )
