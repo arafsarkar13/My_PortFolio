@@ -974,6 +974,83 @@
   );
   $$(".reveal").forEach((el) => io.observe(el));
 
+  /* ---------- interactive starfield background ---------- */
+  // Random star positions as box-shadows (port of the SCSS generateStars()),
+  // regenerated on resize so the sky always fills the screen. The mouse
+  // moves each depth layer by a different amount for a parallax effect.
+  (function initStarfield() {
+    const box = $("#stars-container");
+    if (!box) return;
+    const COUNTS = { small: 700, medium: 200, big: 100 };
+    // keep density constant: the original used 700/200/100 stars on ~2000px
+    const AREA_REF = 2000 * 2000;
+
+    function makeShadows(n, w, h) {
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const x = Math.floor(Math.random() * w);
+        const y = Math.floor(Math.random() * h);
+        out.push(`${x}px ${y}px rgb(var(--star-rgb))`);
+      }
+      return out.join(",");
+    }
+    function build() {
+      const w = innerWidth + 120; // matches the -60px inset on .stars-depth
+      const h = innerHeight + 120;
+      const k = Math.max(0.35, Math.min(1.6, (w * h) / AREA_REF * 2.2));
+      const s = box.style;
+      s.setProperty("--stars-small", makeShadows(Math.round(COUNTS.small * k), w, h));
+      s.setProperty("--stars-medium", makeShadows(Math.round(COUNTS.medium * k), w, h));
+      s.setProperty("--stars-big", makeShadows(Math.round(COUNTS.big * k), w, h));
+    }
+    build();
+    let resizeT;
+    addEventListener("resize", () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(build, 250);
+    });
+
+    if (reduced) return; // no mouse motion for reduced-motion users
+
+    const layers = $$(".stars-depth", box);
+    layers.forEach((l) => l.style.setProperty("--depth", l.dataset.depth || 1));
+
+    const MAX = 60; // max px the nearest layer shifts from centre
+    let tx = 0, ty = 0, cx = 0, cy = 0, running = false;
+
+    function setTarget(clientX, clientY) {
+      tx = (clientX / innerWidth - 0.5) * 2 * MAX; // -MAX .. +MAX
+      ty = (clientY / innerHeight - 0.5) * 2 * MAX;
+      if (!running) {
+        running = true;
+        requestAnimationFrame(tick);
+      }
+    }
+    function tick() {
+      cx += (tx - cx) * 0.06; // smooth easing toward the cursor
+      cy += (ty - cy) * 0.06;
+      box.style.setProperty("--mx", cx.toFixed(2));
+      box.style.setProperty("--my", cy.toFixed(2));
+      if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05) {
+        requestAnimationFrame(tick);
+      } else {
+        running = false; // idle = zero CPU
+      }
+    }
+    addEventListener("mousemove", (e) => setTarget(e.clientX, e.clientY), {
+      passive: true,
+    });
+    // touch devices: react to finger drag
+    addEventListener(
+      "touchmove",
+      (e) => {
+        const t = e.touches[0];
+        if (t) setTarget(t.clientX, t.clientY);
+      },
+      { passive: true },
+    );
+  })();
+
   /* ---------- subtle hero parallax ---------- */
   if (!reduced) {
     const floaters = $(".floaters");

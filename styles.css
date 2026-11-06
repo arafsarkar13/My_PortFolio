@@ -28,6 +28,10 @@
   --display: "Sora", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
   --edge: 34vw;
+  /* starfield */
+  --space-bg: radial-gradient(ellipse at bottom, #1b2735 0%, #191f24 100%);
+  --star-rgb: 255, 255, 255;
+  --star-opacity: 1;
 }
 @media (max-width: 640px) {
   :root {
@@ -36,6 +40,9 @@
 }
 
 [data-theme="light"] {
+  --space-bg: radial-gradient(ellipse at bottom, #ffffff 0%, #eef3fc 100%);
+  --star-rgb: 43, 59, 88;
+  --star-opacity: 0.55;
   --bg: #eef3fc;
   --bg-soft: #ffffff;
   --surface: rgba(16, 24, 42, 0.04);
@@ -69,7 +76,7 @@ html {
 }
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--space-bg) fixed, var(--bg);
   color: var(--fg);
   font-family: var(--font);
   font-size: 16px;
@@ -519,6 +526,101 @@ body::after {
   }
 }
 
+/* ---------- interactive starfield ---------- */
+/* Star positions are random box-shadows generated in script.js (the same
+   technique as the original SCSS generateStars()). They live in custom
+   properties so the colour follows the light/dark theme automatically. */
+#stars-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* sits above .aurora (later in the DOM), below all content */
+  overflow: hidden;
+  pointer-events: none;
+}
+/* wrapper = mouse parallax (JS sets --mx / --my, 0 -> 1 range of pixels) */
+.stars-depth {
+  position: absolute;
+  inset: -60px; /* oversize so parallax never reveals an empty edge */
+  transform: translate3d(
+    calc(var(--mx, 0) * var(--depth, 1) * -1px),
+    calc(var(--my, 0) * var(--depth, 1) * -1px),
+    0
+  );
+  will-change: transform;
+}
+/* inner layer = the slow 3D "sway" from the original keyframes */
+#stars,
+#stars2,
+#stars3 {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  opacity: var(--star-opacity);
+}
+#stars::before,
+#stars2::before,
+#stars3::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+#stars {
+  animation: animateStars 28.5s ease-in-out infinite;
+}
+#stars::before {
+  width: 1px;
+  height: 1px;
+  box-shadow: var(--stars-small);
+}
+#stars2 {
+  animation: animateStars 30s ease-in-out infinite;
+}
+#stars2::before {
+  width: 2px;
+  height: 2px;
+  box-shadow: var(--stars-medium);
+}
+#stars3 {
+  animation: animateStars 31.5s ease-in-out infinite;
+}
+#stars3::before {
+  width: 3px;
+  height: 3px;
+  box-shadow: var(--stars-big);
+}
+@keyframes animateStars {
+  0%,
+  50%,
+  100% {
+    transform: perspective(1400px) rotate3d(-1, 1, 0, 0deg);
+  }
+  25% {
+    transform: perspective(1400px) rotate3d(-1, 1, 0, 30deg);
+  }
+  75% {
+    transform: perspective(1400px) rotate3d(-1, 1, 0, -30deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #stars,
+  #stars2,
+  #stars3 {
+    animation: none;
+  }
+}
+
+/* let the stars show through the alternating sections + footer
+   (they were ~95% opaque before, which hid the background) */
+.section.alt {
+  background: color-mix(in oklab, var(--bg-soft) 55%, transparent);
+}
+.footer {
+  background: color-mix(in oklab, var(--bg-soft) 60%, transparent);
+}
+
 /* ---------- nav (floating pill / dropdown, "Majd"-style) ---------- */
 /* The header itself spans the full width so it can center the pill, but it
    has no background of its own and lets clicks fall through everywhere
@@ -795,7 +897,6 @@ body::after {
   overflow-x: hidden;
 }
 .section.alt {
-  background: color-mix(in oklab, var(--bg-soft) 94%, transparent);
   border-block: 1px solid var(--border);
 }
 .section-head {
@@ -1968,7 +2069,6 @@ textarea:focus {
   position: relative;
   overflow: hidden;
   border-top: 1px solid var(--border);
-  background: color-mix(in oklab, var(--bg-soft) 96%, transparent);
   padding: 2.4rem 0 0;
 }
 .footer-top {
